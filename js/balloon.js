@@ -1,5 +1,6 @@
 var score = 0;
 var combo = 0;
+var hitanu = 0;
 
 var start_time;
 var ms = moment(0);
@@ -215,10 +216,12 @@ function draw() {
   if (step == GAME) {
     ms = moment(moment() - start_time);
   }
+  hitanu = max(hitanu, tanuki_count);
 
   $('#score').text(score + ' / 10000');
   $('#time').text(ms.format('mm:ss.SS'));
   $('#hitime').text(hims.format('mm:ss.SS'));
+  $('#hitanu').text(max($('#hitanu').text(), tanuki_count));
 }
 
 function shoot() {
