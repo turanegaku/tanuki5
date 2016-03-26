@@ -27,8 +27,6 @@ var tanuki_frame;
 var tanuki_count = 0;
 var balloon_count = 0;
 var apple_count = 0;
-var tanukix = [];
-var tanukiy = [];
 
 var BALLOON = 0;
 var APPLE = 1;
@@ -164,13 +162,15 @@ function draw() {
       textSize(50);
       textAlign(CENTER);
       for (var i = 0; i < tanuki_count; i++) {
-        image(raccoon_img, tanukix[i], tanukiy[i], 60, 60);
+        image(raccoon_img, width / 3 + max(0, dd * dd - 1000) + i * 50, height * 4 / 5, 60, 60);
       }
-      text(result_score.format('mm:ss.SS'), width / 2 + max(0, dd * dd - 1000), height / 4);
-      image(balloon_img[0], width / 2 - 50 + max(0, dd * dd - 1000), height * 2 / 4, 60, 60);
-      image(apple_img, width / 2 - 50 + max(0, dd * dd - 1000), height * 3 / 4, 60, 60);
-      text(balloon_count, width / 2 + max(0, dd * dd - 1000), height * 2 / 4);
-      text(apple_count, width / 2 + max(0, dd * dd - 1000), height * 3 / 4);
+      text(result_score.format('mm:ss.SS'), width / 2 + max(0, dd * dd - 1000), height / 5);
+      for (i = 0; i < 3; i++) {
+        image(balloon_img[i], width / 2 - 100 + max(0, dd * dd - 1000) + i * 30, height * 2 / 5, 120, 120);
+      }
+      image(apple_img, width / 2 - 80 + max(0, dd * dd - 1000), height * 3 / 5, 60, 60);
+      text(balloon_count, width / 2 + max(0, dd * dd - 1000), height * 2 / 5);
+      text(apple_count, width / 2 + max(0, dd * dd - 1000), height * 3 / 5);
     } else {
       textSize(20);
       textAlign(CENTER);
@@ -244,10 +244,6 @@ function shoot() {
     result_frame = 240;
     if (ms < hims)
       hims = ms;
-    for (var i = 0; i < tanuki_count; i++) {
-      tanukix.push(random(width));
-      tanukiy.push(random(height));
-    }
   }
 }
 
@@ -268,8 +264,6 @@ function mousePressed() {
       tanuki_count = 0;
       balloon_count = 0;
       apple_count = 0;
-      tanukix = [];
-      tanukiy = [];
     }
     return;
   }
