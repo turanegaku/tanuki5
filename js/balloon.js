@@ -24,6 +24,12 @@ var result_frame = 0;
 var tanuki_color;
 var tanuki_frame;
 
+var tanuki_count = 0;
+var balloon_count = 0;
+var apple_count = 0;
+var tanukix = [];
+var tanukiy = [];
+
 var BALLOON = 0;
 var APPLE = 1;
 var TANUKI = 2;
@@ -73,9 +79,11 @@ function Balloon(x, y, object, diff, i) {
   this.add_apple = function() {
     switch (object) {
       case APPLE:
+        apple_count++;
         score += 500;
         break;
       case BALLOON:
+        balloon_count++;
         if (score > 5000)
           balloons.push(new Balloon(this.x, this.y, int(random(1, 2.8)), diff, this.i));
         else
@@ -83,6 +91,7 @@ function Balloon(x, y, object, diff, i) {
         score += 100;
         break;
       case TANUKI:
+        tanuki_count++;
         tanuki_color = this.i;
         tanuki_frame = 30;
         score = 0;
@@ -150,11 +159,18 @@ function draw() {
   } else if (step == TITLE) {
     if (result_frame > 0) {
       result_frame--;
-      var dd = (result_frame - 120) / 2;
+      var dd = (result_frame - 150) / 2;
       fill(0);
       textSize(50);
       textAlign(CENTER);
+      for (var i = 0; i < tanuki_count; i++) {
+        image(raccoon_img, tanukix[i], tanukiy[i], 60, 60);
+      }
       text(result_score.format('mm:ss.SS'), width / 2 + max(0, dd * dd - 1000), height / 4);
+      image(balloon_img[0], width / 2 - 50 + max(0, dd * dd - 1000), height * 2 / 4, 60, 60);
+      image(apple_img, width / 2 - 50 + max(0, dd * dd - 1000), height * 3 / 4, 60, 60);
+      text(balloon_count, width / 2 + max(0, dd * dd - 1000), height * 2 / 4);
+      text(apple_count, width / 2 + max(0, dd * dd - 1000), height * 3 / 4);
     } else {
       textSize(20);
       textAlign(CENTER);
@@ -225,9 +241,13 @@ function shoot() {
     score = 10000;
     step = TITLE;
     result_score = ms;
-    result_frame = 200;
+    result_frame = 240;
     if (ms < hims)
       hims = ms;
+    for (var i = 0; i < tanuki_count; i++) {
+      tanukix.push(random(width));
+      tanukiy.push(random(height));
+    }
   }
 }
 
@@ -245,6 +265,11 @@ function mousePressed() {
       frameCount = 0;
       combo = 0;
       balloons = [];
+      tanuki_count = 0;
+      balloon_count = 0;
+      apple_count = 0;
+      tanukix = [];
+      tanukiy = [];
     }
     return;
   }
