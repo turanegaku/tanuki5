@@ -156,21 +156,23 @@ function draw() {
     });
   } else if (step == TITLE) {
     if (result_frame > 0) {
-      result_frame--;
-      var dd = (result_frame - 150) / 2;
+      if (result_frame != 30)
+        result_frame--;
+      var dd = map(result_frame, 60, 0, sqrt(width), -sqrt(width));
+      dd = dd * dd;
       fill(0);
       textSize(50);
       textAlign(CENTER);
       for (var i = 0; i < tanuki_count; i++) {
-        image(raccoon_img, width / 3 + max(0, dd * dd - 1000) + i * 50, height * 4 / 5, 60, 60);
+        image(raccoon_img, width / 3 + dd + i * 50, height * 4 / 5, 60, 60);
       }
-      text(result_score.format('mm:ss.SS'), width / 2 + max(0, dd * dd - 1000), height / 5);
+      text(result_score.format('mm:ss.SS'), width / 2 + dd, height / 5);
       for (i = 0; i < 3; i++) {
-        image(balloon_img[i], width / 2 - 100 + max(0, dd * dd - 1000) + i * 30, height * 2 / 5, 120, 120);
+        image(balloon_img[i], width / 2 - 100 + dd + i * 30, height * 2 / 5, 120, 120);
       }
-      image(apple_img, width / 2 - 80 + max(0, dd * dd - 1000), height * 3 / 5, 60, 60);
-      text(balloon_count, width / 2 + max(0, dd * dd - 1000), height * 2 / 5);
-      text(apple_count, width / 2 + max(0, dd * dd - 1000), height * 3 / 5);
+      image(apple_img, width / 2 - 80 + dd, height * 3 / 5, 60, 60);
+      text(balloon_count, width / 2 + dd + 100, height * 2 / 5);
+      text(apple_count, width / 2 + dd + 100, height * 3 / 5);
     } else {
       textSize(20);
       textAlign(CENTER);
@@ -241,7 +243,7 @@ function shoot() {
     score = 10000;
     step = TITLE;
     result_score = ms;
-    result_frame = 240;
+    result_frame = 60;
     if (ms < hims)
       hims = ms;
   }
@@ -253,6 +255,7 @@ function mousePressed() {
   }
   shoot_time = shoot_frame;
 
+  if (result_frame == 30) result_frame--;
   if (step == TITLE && result_frame <= 0) {
     if ((mx - width / 2) * (mx - width / 2) + (my - height / 2) * (my - height / 2) < 50 * 50) {
       step = GAME;
@@ -268,5 +271,6 @@ function mousePressed() {
     return;
   }
 
-  shoot();
+  if (step == GAME)
+    shoot();
 }
