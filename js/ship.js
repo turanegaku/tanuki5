@@ -11,7 +11,6 @@ var prabbitx = 0;
 var rabbitx = 0;
 var rabbitdx = 0;
 var rabbitY = 380;
-var move_frame = 0;
 
 var result_score;
 var result_frame = 0;
@@ -55,6 +54,7 @@ function Raccoon(x, y) {
       if (!this.scored) {
         this.scored = true;
         score++;
+        if (this.x > 0) score++;
       }
     }
   };
@@ -108,7 +108,7 @@ function draw() {
   if (step == GAME) {
 
     if (--f <= 0 || raccoons.length === 0) {
-      f = map(min(score, 30), 0, 30, 600, 60);
+      f = map(min(score, 20), 0, 20, 400, 60);
       raccoons.push(new Raccoon(random(150, width - 100), 0));
     }
     $.each(raccoons, function(i, v) {
@@ -209,5 +209,10 @@ function draw() {
 function mousePressed() {
   if (result_frame === 30) {
     result_frame--;
-  } else if (step == TITLE) step = GAME;
+  } else if (step == TITLE) {
+    step = GAME;
+    life = 3;
+    score = 0;
+    raccoons = [];
+  }
 }
