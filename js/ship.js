@@ -19,6 +19,16 @@ var WATER_Y = 425;
 var FIELD_X = 80;
 var FIELD_Y = 400;
 
+var f = 600;
+
+raccoons = [];
+
+var TITLE = 0;
+var GAME = 1;
+var RESULT = 2;
+
+var step = TITLE;
+
 function Raccoon(x, y) {
   this.y = y;
   this.x = x;
@@ -73,13 +83,12 @@ function Raccoon(x, y) {
   };
 }
 
-raccoons = [];
-
-var TITLE = 0;
-var GAME = 1;
-var RESULT = 2;
-
-var step = TITLE;
+function init() {
+  life = 3;
+  score = 0;
+  raccoons = [new Raccoon(width / 2, 0)];
+  f = 600;
+}
 
 function setup() {
   createCanvas(800, 450).parent('p5Canvas');
@@ -91,7 +100,7 @@ function setup() {
   textAlign(CENTER);
   textSize(30);
   imageMode(CENTER);
-  raccoons.push(new Raccoon(width / 2, 0));
+  init();
 
   // hiscore = int(document.cookie);
   // $(window).on("beforeunload", function(e) {
@@ -99,21 +108,51 @@ function setup() {
   // });
 }
 
-var f = 600;
+// call when game to title
+function gameEnd() {
+  step = TITLE;
+  result_frame = 60;
+  result_score = score;
+}
 
+// draw title & result
+function title() {
+  if (result_frame > 0) {
+    if (result_frame != 30)
+      result_frame--;
+    var dd = map(result_frame, 60, 0, sqrt(width), -sqrt(width));
+    dd = dd * dd;
+    textSize(50);
+    fill(0);
+    text('RESULT', width / 2 + dd, height / 5);
+    text(result_score, width / 2 + dd, height * 3 / 5);
+    var a = TWO_PI / result_score;
+    // a lot of tanuki cicle
+    for (ii = 0; ii < result_score; ii++) {
+      image(raccoon1, width / 2 + dd + cos(a * ii) * 200, height * 3 / 5 - 10 + sin(a * ii) * 100, 40, 40);
+    }
+  } else {
+    textSize(30);
+    fill(0);
+    text('Click to start', width / 2, height / 2);
+  }
+}
 
 function draw() {
   background(255, 255, 255);
 
   if (step == GAME) {
-
+    // new tanuki
     if (--f <= 0 || raccoons.length === 0) {
+      // for difficult
       f = map(min(score, 20), 0, 20, 400, 60);
       raccoons.push(new Raccoon(random(150, width - 100), 0));
     }
     $.each(raccoons, function(i, v) {
       v.update();
+      // this is two action on tanuki and rabbit collision
       if (v.with_ship) {
+        // tanuki attack
         if (sq(v.x - rabbitx) + sq(v.y - rabbitY) < 80 * 80) {
           if (v.dy > 3) {
             if (v.x < rabbitx)
@@ -123,7 +162,9 @@ function draw() {
           }
         }
       } else if (v.dy > 0) {
+        // tanuki jump
         if (sq(v.x - rabbitx) + sq(v.y - rabbitY) < 70 * 70) {
+          // tanuki jump to angle rabbit to tanuki
           var a = atan2(v.y - rabbitY, v.x - rabbitx);
           var s = random(4, 7);
           v.dx = cos(a) * s;
@@ -131,16 +172,17 @@ function draw() {
         }
       }
     });
+    // dead tanuki
     del_raccoon = raccoons.filter(function(v) {
       return v.y > height;
     });
+    // when tanuki dead, dec life
     if (del_raccoon.length > 0) {
       life -= del_raccoon.length;
       if (life <= 0) {
-        step = TITLE;
-        result_frame = 60;
-        result_score = score;
+        gameEnd();
       }
+      // filter live tanuki
       raccoons = raccoons.filter(function(v) {
         if (v.y <= height) return true;
         if (v.scored && v.x < -50) return true;
@@ -154,45 +196,31 @@ function draw() {
   rabbitx = (mouseX + rabbitx * 9) / 10;
   rabbitx = constrain(rabbitx, FIELD_X + 50, width - 50);
 
-
+  // draw tanuki
   if (step == GAME) {
     $.each(raccoons, function(i, v) {
       v.draw();
     });
   }
 
+  // draw rabbit
   if (abs(prabbitx - rabbitx) > 3)
     image(rabbit1, rabbitx, rabbitY, 100, 100);
   else
     image(rabbit2, rabbitx, rabbitY, 100, 100);
 
+  // draw lifes
   if (step == GAME) {
+    fill(0);
+    text('Life', width - 150, 40);
     for (var i = 0; i < life; i++) {
-      fill(0);
-      text('Life', width - 150, 40);
       image(raccoon1, width - 30 - i * 30, 30, 30, 30);
     }
   } else {
-    if (result_frame > 0) {
-      if (result_frame != 30)
-        result_frame--;
-      var dd = map(result_frame, 60, 0, sqrt(width), -sqrt(width));
-      dd = dd * dd;
-      textSize(50);
-      fill(0);
-      text('RESULT', width / 2 + dd, height / 5);
-      text(result_score, width / 2 + dd, height * 3 / 5);
-      var a = TWO_PI / result_score;
-      for (ii = 0; ii < result_score; ii++) {
-        image(raccoon1, width / 2 + dd + cos(a * ii) * 200, height * 3 / 5 - 10 + sin(a * ii) * 100, 40, 40);
-      }
-    } else {
-      textSize(30);
-      fill(0);
-      text('Click to start', width / 2, height / 2);
-    }
+    title();
   }
 
+  // draw water and ground
   fill(150, 20, 200);
   rect(0, WATER_Y, width, 100);
   fill(100, 200, 100);
@@ -207,12 +235,13 @@ function draw() {
 }
 
 function mousePressed() {
-  if (result_frame === 30) {
-    result_frame--;
-  } else if (step == TITLE) {
+  if (step == TITLE) {
+    if (result_frame == 30) result_frame--;
+    if (result_frame <= 0) {
+      step = GAME;
+      init();
+    }
     step = GAME;
-    life = 3;
-    score = 0;
-    raccoons = [];
+    init();
   }
 }

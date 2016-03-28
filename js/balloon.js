@@ -105,6 +105,17 @@ var TITLE = 0;
 var GAME = 1;
 var step = TITLE;
 
+function init() {
+  start_time = moment();
+  score = 0;
+  frameCount = 0;
+  combo = 0;
+  balloons = [];
+  tanuki_count = 0;
+  balloon_count = 0;
+  apple_count = 0;
+}
+
 function setup() {
   createCanvas(800, 450).parent('p5Canvas');
 
@@ -118,7 +129,51 @@ function setup() {
   balloon_img.push(loadImage('./img/balloon2.png'));
   balloon_img.push(loadImage('./img/balloon3.png'));
 
+  init();
+
   imageMode(CENTER);
+}
+
+// call when game to title
+function gameEnd() {
+  step = TITLE;
+  result_score = ms;
+  result_frame = 60;
+  if (ms < hims)
+    hims = ms;
+}
+
+// draw title & result
+function title() {
+  if (result_frame > 0) {
+    if (result_frame != 30)
+      result_frame--;
+    var dd = map(result_frame, 60, 0, sqrt(width), -sqrt(width));
+    dd = dd * dd;
+    fill(0);
+    textSize(50);
+    textAlign(CENTER);
+    for (var i = 0; i < tanuki_count; i++) {
+      image(raccoon_img, width / 3 + dd + i * 50, height * 4 / 5, 60, 60);
+    }
+    text(result_score.format('mm:ss.SS'), width / 2 + dd, height / 5);
+    for (i = 0; i < 3; i++) {
+      image(balloon_img[i], width / 2 - 100 + dd + i * 30, height * 2 / 5, 120, 120);
+    }
+    image(apple_img, width / 2 - 80 + dd, height * 3 / 5, 60, 60);
+    text(balloon_count, width / 2 + dd + 100, height * 2 / 5);
+    text(apple_count, width / 2 + dd + 100, height * 3 / 5);
+  } else {
+    textSize(20);
+    textAlign(CENTER);
+    noStroke();
+    fill(100, 100, 200);
+    ellipse(width / 2, height / 2, 100, 100);
+    stroke(0);
+    fill(255);
+    noStroke();
+    text("START!!", width / 2, height / 2 + 10);
+  }
 }
 
 function draw() {
@@ -156,35 +211,7 @@ function draw() {
       v.draw();
     });
   } else if (step == TITLE) {
-    if (result_frame > 0) {
-      if (result_frame != 30)
-        result_frame--;
-      var dd = map(result_frame, 60, 0, sqrt(width), -sqrt(width));
-      dd = dd * dd;
-      fill(0);
-      textSize(50);
-      textAlign(CENTER);
-      for (var i = 0; i < tanuki_count; i++) {
-        image(raccoon_img, width / 3 + dd + i * 50, height * 4 / 5, 60, 60);
-      }
-      text(result_score.format('mm:ss.SS'), width / 2 + dd, height / 5);
-      for (i = 0; i < 3; i++) {
-        image(balloon_img[i], width / 2 - 100 + dd + i * 30, height * 2 / 5, 120, 120);
-      }
-      image(apple_img, width / 2 - 80 + dd, height * 3 / 5, 60, 60);
-      text(balloon_count, width / 2 + dd + 100, height * 2 / 5);
-      text(apple_count, width / 2 + dd + 100, height * 3 / 5);
-    } else {
-      textSize(20);
-      textAlign(CENTER);
-      noStroke();
-      fill(100, 100, 200);
-      ellipse(width / 2, height / 2, 100, 100);
-      stroke(0);
-      fill(255);
-      noStroke();
-      text("START!!", width / 2, height / 2 + 10);
-    }
+    title();
   }
   var p = sq(shoot_time / shoot_frame);
   var r = 20 * (1 - p);
@@ -244,11 +271,7 @@ function shoot() {
 
   if (score >= 10000) {
     score = 10000;
-    step = TITLE;
-    result_score = ms;
-    result_frame = 60;
-    if (ms < hims)
-      hims = ms;
+    gameEnd();
   }
 }
 
@@ -262,14 +285,7 @@ function mousePressed() {
   if (step == TITLE && result_frame <= 0) {
     if ((mx - width / 2) * (mx - width / 2) + (my - height / 2) * (my - height / 2) < 50 * 50) {
       step = GAME;
-      start_time = moment();
-      score = 0;
-      frameCount = 0;
-      combo = 0;
-      balloons = [];
-      tanuki_count = 0;
-      balloon_count = 0;
-      apple_count = 0;
+      init();
     }
     return;
   }

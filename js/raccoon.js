@@ -12,7 +12,8 @@ var raccoondy = 0;
 var raccoonv = 0;
 var raccoonjump = 0;
 
-var time = -1000;
+var result_score;
+var result_frame = 0;
 
 function Enemy(i, x) {
   this.i = i;
@@ -29,7 +30,18 @@ var GAME = 1;
 
 var step = TITLE;
 
+// new animal score
 var trg = 1000;
+
+// allow w jump
+var wj = false;
+
+function init() {
+  wj = !$('.wj').prop('checked');
+  score = 0;
+  foxsx = [new Enemy(0, 900), new Enemy(0, 1800)];
+  trg = 1000;
+}
 
 function setup() {
   createCanvas(800, 450).parent('p5Canvas');
@@ -39,12 +51,38 @@ function setup() {
   raccoon2 = loadImage('./img/tanuki2.png');
   textAlign(CENTER);
   textSize(50);
+  init();
 
-  hiscore = int(document.cookie);
-  $(window).on("beforeunload", function(e) {
-    document.cookie = hiscore;
-  });
+  // hiscore = int(document.cookie);
+  // $(window).on("beforeunload", function(e) {
+  //   document.cookie = hiscore;
+  // });
 }
+
+// call when game to title
+function gameEnd() {
+  step = TITLE;
+  result_score = int(score);
+  result_frame = 60;
+}
+
+// draw title & result
+function title() {
+  if (result_frame > 0) {
+    if (result_frame != 30)
+      result_frame--;
+    var dd = map(result_frame, 60, 0, sqrt(width), -sqrt(width));
+    dd = dd * dd;
+    fill(0);
+    text('RESULT', width / 2 + dd, height / 5);
+    text(result_score, width / 2 + dd, height * 3 / 5);
+  } else {
+    fill(0);
+    noStroke();
+    text("Click Start!!", width / 2, height / 2);
+  }
+}
+
 
 function draw() {
   background(255, 255, 255);
@@ -62,22 +100,24 @@ function draw() {
   } else {
     raccoondy = 0;
   }
-  var D = 60 * 60;
 
   if (step == GAME) {
+    var D = 60 * 60;
     $.each(foxsx, function(i, foxx) {
       if ((raccoonY - raccoondy - foxY[foxx.i]) * (raccoonY - raccoondy - foxY[foxx.i]) + (raccoonX - foxx.x) * (raccoonX - foxx.x) < D) {
-        step = TITLE;
-        time = frameCount;
+        gameEnd();
       }
     });
   }
+
+  // draw ground
   beginShape();
   for (var i = -100; i < 900; i += 10) {
     vertex(i, raccoonY + 120 + sin(radians(i + score * scored2)) * 10);
   }
   vertex();
   endShape();
+  // draw animals
   if (int((score / 10)) % 2 === 0 || raccoonjump > 0) {
     image(raccoon, raccoonX, raccoonY - raccoondy, SIZE, SIZE);
   } else {
@@ -89,6 +129,7 @@ function draw() {
 
   if (step == GAME) {
     score += scored;
+    // new fox
     if (trg < score) {
       trg += 1000;
       if (trg === 2000 || trg === 5000) {
@@ -98,6 +139,7 @@ function draw() {
       }
     }
 
+    // fox move
     $.each(foxsx, function(i, foxx) {
       foxsx[i].x -= scored2 * scored;
       if (foxsx[i].x < -200) {
@@ -105,26 +147,29 @@ function draw() {
       }
     });
   } else {
-    text("Click Start !!!!!", width / 2, height / 2);
+    title();
   }
+
   hiscore = int(max(score, hiscore));
   $('#score').text(int(score));
   $('#hiscore').text(hiscore);
 }
 
 function press() {
-  if (frameCount - time > 30) {
-    if (step == TITLE) {
-      step = GAME;
-      score = 0;
-      foxsx = [new Enemy(0, 900), new Enemy(0, 1800)];
-      trg = 1000;
-    } else {
-      if (raccoonjump < 2) {
+  switch (step) {
+    case TITLE:
+      if (result_frame == 30) result_frame--;
+      if (result_frame <= 0) {
+        step = GAME;
+        init();
+      }
+      break;
+    case GAME:
+      if (raccoonjump < 1 || (raccoonjump < 2 && wj)) {
         raccoonjump++;
         raccoonv = raccoonV;
       }
-    }
+      break;
   }
 }
 
