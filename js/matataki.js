@@ -27,6 +27,8 @@ var ans = 0;
 
 var d = 0;
 var timed = 0;
+var limit = 0;
+var limit_start;
 
 function Object(i1, i2, x0, y0, correct) {
   this.tanuans = i1;
@@ -118,6 +120,7 @@ function nextTanuki() {
   if (score % 10 === 0) tanuki_wait = 0;
   if (score === 0 && d !== 0) tanuki_wait = 100;
 
+
   qs = [];
   var lv = int(min(score / 5 + 1, 4));
   for (var i = 0; i < lv; i++) {
@@ -180,7 +183,8 @@ function title() {
     text('RESULT', width / 2 + dd, height / 5);
     text(result_score, width / 2 + dd, height * 3 / 5);
     qs[ans].drawTanukiEn(width / 2 + dd + 200, height * 3 / 5, 60);
-    qs[result_select].drawTanuki(width / 2 + dd - 200, height * 3 / 5, 80);
+    if (result_select != -1)
+      qs[result_select].drawTanuki(width / 2 + dd - 200, height * 3 / 5, 80);
   } else {
     textSize(32);
     fill(255, 200);
@@ -205,6 +209,7 @@ function draw() {
         fill(0);
         if (--tanuki_time <= 0) {
           gameS = A;
+          limit = moment().add(map(min(score, 20), 0, 20, 60, 5), 's');
         }
       }
     }
@@ -224,6 +229,17 @@ function draw() {
         q.update();
         q.draw();
       });
+      var now = moment();
+      if (limit.isBefore(now)) {
+        result_select = -1;
+        gameEnd();
+      }
+      var dt = int(limit.diff(now) / 1000) + 1;
+      fill(255, 200, 200);
+      text(dt, width / 2 + 2, height / 2 + 2);
+      text(dt, width / 2 - 2, height / 2 - 2);
+      fill(200, 100, 100);
+      text(dt, width / 2, height / 2);
     }
   }
 
@@ -247,6 +263,7 @@ function mousePressed() {
     if (gameS == A) {
       $.each(qs, function(i, q) {
         if (q.ison) {
+          mouseX = mouseY = 0;
           if (q.correct) {
             score++;
             nextTanuki();
