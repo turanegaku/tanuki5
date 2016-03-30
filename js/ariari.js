@@ -1,20 +1,45 @@
-var hiSCore = 0;
-var SCore = 0;
+var hiscore = moment(1800000);
+var score = moment(0);
+var start_time = moment();
 
 var raccoon1;
 var raccoon2;
+var ant;
+var cong;
 
-var result_SCore;
+var result_score;
 var result_frame = 0;
 
-var ant_x = 25;
-var ant_y = 25;
-var ant_r = 8;
+var START_X = 25;
+var START_Y = 25;
+var ant_x = START_X;
+var ant_y = START_Y;
+var ant_r = 3;
+var ant_save = 0;
+var ant_WAIT = 40;
+
+var ant_nomove = 0;
+var ant_hitbar = [];
+var tanukihit = false;
+var hit_tanuki;
 
 var TITLE = 0;
 var GAME = 1;
 
 var step = TITLE;
+
+var hard = false;
+
+var raccoons = [];
+
+var saves = [
+  [25, 25],
+  [95, 75],
+  [110, 145],
+  [250, 110],
+  [255, 255],
+  [180, 375],
+];
 
 var bars = [
   [135, 170],
@@ -56,7 +81,17 @@ var bars = [
   [280, 210],
   [245, 210],
   [280, 210],
-  [280, 380],
+  [280, 280],
+  [279, 290],
+  [277, 300],
+  [274, 310],
+  [270, 320],
+  [265, 330],
+  [259, 340],
+  [251, 350],
+  [241, 360],
+  [229, 370],
+  [215, 380],
   [170, 380],
   [175, 250],
   [135, 250],
@@ -67,6 +102,9 @@ var bars = [
   [135, 50],
   [135, 100],
   [225, 100],
+  [225, 135],
+  [265, 135],
+  [225, 135],
   [225, 150],
   [190, 150],
   [225, 150],
@@ -80,22 +118,49 @@ var bars = [
   [265, 225],
   [265, 230],
   [230, 230],
-  [230, 270],
-  [265, 270],
-  [265, 370],
+  [230, 280],
+  [265, 280],
+  [264, 290],
+  [262, 300],
+  [259, 310],
+  [255, 320],
+  [249, 330],
+  [241, 340],
+  [231, 350],
+  [220, 360],
+  [200, 370],
   [190, 370],
   [185, 250],
   [225, 250],
   [225, 225],
 ];
 
+var ROLL_X = 180;
+var ROLL_Y = 50;
+var ROLL_R = 50;
+var bars2 = [
+  [ROLL_X, ROLL_Y],
+  [ROLL_X, ROLL_Y],
+  [ROLL_X, ROLL_Y],
+  [ROLL_X, ROLL_Y],
+  [ROLL_X, ROLL_Y],
+  [ROLL_X, ROLL_Y],
+  [ROLL_X, ROLL_Y],
+  [ROLL_X, ROLL_Y],
+  [ROLL_X, ROLL_Y],
+  [ROLL_X, ROLL_Y],
+  [ROLL_X, ROLL_Y],
+  [ROLL_X, ROLL_Y],
+  [ROLL_X, ROLL_Y],
+];
 
-function Raccoon(x, y) {
+
+function Raccoon(x, y, dx, dy) {
   this.y = y;
   this.x = x;
-  this.dx = 0;
-  this.dy = 0;
-  this.ddy = 0.1;
+  this.dx = dx;
+  this.dy = dy;
+  this.ddy = 0.01;
 
   this.update = function() {
     this.x += this.dx;
@@ -103,30 +168,39 @@ function Raccoon(x, y) {
     this.dy += this.ddy;
   };
 
-  this.draw = function() {
+  this.draw = function(DX, DY, SC) {
     if (this.dy < -1)
-      image(raccoon1, this.x, this.y, 85, 85);
+      image(raccoon1, this.x * SC + DX, this.y * SC + DY, 60, 60);
     else
-      image(raccoon2, this.x, this.y, 85, 85);
+      image(raccoon2, this.x * SC + DX, this.y * SC + DY, 60, 60);
   };
 }
 
 function init() {
-  SCore = 0;
+  ant_x = START_X;
+  ant_y = START_Y;
+  ant_save = 0;
+  raccoons = [];
+  tanukihit = false;
+  ant_nomove = 0;
+
+  hard = $('.hard').prop('checked');
 }
 
 function setup() {
   createCanvas(800, 450).parent('p5Canvas');
   raccoon1 = loadImage('./img/tanuki.png');
   raccoon2 = loadImage('./img/tanuki2.png');
+  ant = loadImage('./img/ari.png');
+  cong = loadImage('./img/cong.png');
   textAlign(CENTER);
   textSize(30);
   imageMode(CENTER);
   init();
 
-  // hiSCore = int(document.cookie);
+  // hiscore = int(document.cookie);
   // $(window).on("beforeunload", function(e) {
-  //   document.cookie = hiSCore;
+  //   document.cookie = hiscore;
   // });
 }
 
@@ -134,7 +208,9 @@ function setup() {
 function gameEnd() {
   step = TITLE;
   result_frame = 60;
-  result_SCore = SCore;
+  if (hiscore > score)
+    hiscore = score;
+  result_score = score;
 }
 
 // draw title & result
@@ -145,13 +221,16 @@ function title() {
     var dd = map(result_frame, 60, 0, sqrt(width), -sqrt(width));
     dd = dd * dd;
     textSize(50);
-    fill(0);
+    fill(255);
     text('RESULT', width / 2 + dd, height / 5);
-    text(result_SCore, width / 2 + dd, height * 3 / 5);
+    text(result_score.format('mm:ss.SS'), width / 2 + dd, height * 3 / 5);
+    if (hard) {
+      image(cong, width / 2 + dd, height * 2 / 5, 100, 100);
+    }
   } else {
     textSize(30);
-    fill(0);
-    // text('Click to start', width / 2, height / 2);
+    fill(255);
+    text('Click to start', width / 2, height / 2);
   }
 }
 
@@ -162,41 +241,162 @@ function dot(ax, ay, bx, by) {
 
 function draw() {
   background(0);
+  var i = 0;
+  var ant_to = ant_save;
+  if (hard) ant_to = 0;
 
+  if (step == TITLE) {
+    if (result_frame >= 30) {
+      ant_x = (ant_x * 19 + 180) / 20;
+      ant_y = (ant_y * 19 + 125) / 20;
+    } else if (result_frame > 0) {
+      ant_x = map(result_frame, 30, 0, ant_x, START_X);
+      ant_y = map(result_frame, 30, 0, ant_y, START_Y);
+      ant_save = ant_to;
+    }
+
+  }
+  var a = TWO_PI / 5;
+  for (i = 0; i < bars2.length; i += 2) {
+    bars2[i][0] = ROLL_X + cos(radians(frameCount / 2) + a * i / 2) * ROLL_R;
+    bars2[i][1] = ROLL_Y + sin(radians(frameCount / 2) + a * i / 2) * ROLL_R;
+  }
+  if (ant_save >= 5) {
+    if (frameCount % 60 === 0) {
+      raccoons.push(new Raccoon(135, random(150, 250), random(0.2, 0.5), random(-1, 0)));
+    } else if (frameCount % 60 === 30) {
+      raccoons.push(new Raccoon(225, random(150, 250), -random(0.2, 0.5), random(-1, 0)));
+    }
+  }
   if (step == GAME) {
-    ant_x += map(mouseX, width / 2 - 100, width / 2 + 100, -1, 1);
-    ant_y += map(mouseY, height / 2 - 100, height / 2 + 100, -1, 1);
+    if (ant_nomove > 0) {
+      ant_nomove--;
+      if (ant_nomove < ant_WAIT / 2) {
+        ant_x = map(ant_nomove, ant_WAIT / 2, 0, ant_x, saves[ant_to][0]);
+        ant_y = map(ant_nomove, ant_WAIT / 2, 0, ant_y, saves[ant_to][1]);
+      }
+      if (ant_nomove <= 0) {
+        ant_x = saves[ant_to][0];
+        ant_y = saves[ant_to][1];
+        tanukihit = false;
+      }
+    } else {
+      ant_x += map(mouseX, width / 2 - 100, width / 2 + 100, -1, 1);
+      ant_y += map(mouseY, height / 2 - 100, height / 2 + 100, -1, 1);
+    }
+    for (i = ant_save; i < saves.length; i++) {
+      if (sq(ant_x - saves[i][0]) + sq(ant_y - saves[i][1]) < sq(20)) {
+        if (ant_save + 1 == i)
+          ant_save = i;
+      }
+    }
+    if (135 + 10 < ant_x && ant_x < 225 - 10 && 100 + 10 < ant_y && ant_y < 150 - 10) {
+      if (ant_save >= 5) {
+        gameEnd();
+      }
+    }
   }
   var SC = 8;
   var DX = width / 2 - ant_x * SC;
   var DY = height / 2 - ant_y * SC;
 
-  for (var i = 0; i < bars.length - 1; i++) {
-    var x1 = bars[i + 1][0] - bars[i][0];
-    var y1 = bars[i + 1][1] - bars[i][1];
-    var x2 = ant_x - bars[i][0];
-    var y2 = ant_y - bars[i][1];
-    var cross = abs(x1 * y2 - x2 * y1);
-    var s = sqrt(sq(x1) + sq(y1));
-    var d = cross / s;
-    if (d < ant_r) {
-      var x3 = ant_x - bars[i + 1][0];
-      var y3 = ant_y - bars[i + 1][1];
-      if (dot(x2, y2, x1, y1) * dot(x3, y3, x1, y1) <= 0 || sq(x2) + sq(y2) < sq(ant_r) || sq(x3) + sq(y3) < sq(ant_r)) {
-        strokeWeight(20);
-        stroke(200, 200, 200);
-        line(bars[i][0] * SC + DX, bars[i][1] * SC + DY, bars[i + 1][0] * SC + DX, bars[i + 1][1] * SC + DY);
+  if (step == GAME) {
+
+    if (ant_nomove === 0) {
+      ant_hitbar = [];
+      // check hit bar
+      var x1, y1, x2, y2, cross, s, d, x3, y3;
+      for (i = 0; i < bars.length - 1; i++) {
+        x1 = bars[i + 1][0] - bars[i][0];
+        y1 = bars[i + 1][1] - bars[i][1];
+        x2 = ant_x - bars[i][0];
+        y2 = ant_y - bars[i][1];
+        cross = abs(x1 * y2 - x2 * y1);
+        s = sqrt(sq(x1) + sq(y1));
+        d = cross / s;
+        if (d < ant_r) {
+          x3 = ant_x - bars[i + 1][0];
+          y3 = ant_y - bars[i + 1][1];
+          if (dot(x2, y2, x1, y1) * dot(x3, y3, x1, y1) <= 0 || sq(x2) + sq(y2) < sq(ant_r) || sq(x3) + sq(y3) < sq(ant_r)) {
+            ant_nomove = ant_WAIT;
+            ant_hitbar.push(i);
+          }
+        }
       }
+      for (i = 0; i < bars2.length - 1; i++) {
+        x1 = bars2[i + 1][0] - bars2[i][0];
+        y1 = bars2[i + 1][1] - bars2[i][1];
+        x2 = ant_x - bars2[i][0];
+        y2 = ant_y - bars2[i][1];
+        cross = abs(x1 * y2 - x2 * y1);
+        s = sqrt(sq(x1) + sq(y1));
+        d = cross / s;
+        if (d < ant_r) {
+          x3 = ant_x - bars2[i + 1][0];
+          y3 = ant_y - bars2[i + 1][1];
+          if (dot(x2, y2, x1, y1) * dot(x3, y3, x1, y1) <= 0 || sq(x2) + sq(y2) < sq(ant_r) || sq(x3) + sq(y3) < sq(ant_r)) {
+            ant_nomove = ant_WAIT;
+            ant_hitbar.push(-i);
+          }
+        }
+      }
+    } else if (!tanukihit) {
+      // draw hit bar
+      $.each(ant_hitbar, function(_, i) {
+        strokeWeight(50);
+        stroke(255, 100, 100);
+        if (i >= 0)
+          line(bars[i][0] * SC + DX, bars[i][1] * SC + DY, bars[i + 1][0] * SC + DX, bars[i + 1][1] * SC + DY);
+        else
+          line(bars2[-i][0] * SC + DX, bars2[-i][1] * SC + DY, bars2[-i + 1][0] * SC + DX, bars2[-i + 1][1] * SC + DY);
+      });
     }
+
+    // hit tanuki
+    if (!tanukihit)
+      $.each(raccoons, function(_, v) {
+        if (sq(ant_x - v.x) + sq(ant_y - v.y) < sq(8)) {
+          tanukihit = true;
+          hit_tanuki = v;
+          ant_nomove = ant_WAIT;
+        }
+      });
+  }
+  // update tanuki
+  $.each(raccoons, function(_, v) {
+    v.update();
+  });
+  raccoons = raccoons.filter(function(v) {
+    return 135 < v.x && v.x < 225 && 150 < v.y && v.y < 250;
+  });
+
+  if (tanukihit) {
+    noStroke();
+    fill(255, 100, 100);
+    ellipse(hit_tanuki.x * SC + DX, hit_tanuki.y * SC + DY, 50, 50);
+  }
+  // draw tanuki
+  $.each(raccoons, function(_, v) {
+    v.draw(DX, DY, SC);
+  });
+
+  // draw save
+  fill(150, 150, 255, 150);
+  noStroke();
+  for (i = 0; i < ant_to + 1; i++) {
+    var sr = (sin(radians(frameCount + i * 45)) * 10 + 50) * SC;
+    var sr2 = (sin(radians(frameCount * 1.1 + (i + 3) * 45)) * 10 + 40) * SC;
+    ellipse(saves[i][0] * SC + DX, saves[i][1] * SC + DY, sr, sr);
+    ellipse(saves[i][0] * SC + DX, saves[i][1] * SC + DY, sr2, sr2);
   }
 
-
-
+  // draw bars
   var v = 1000000;
   var vi = 0;
   noFill();
-  strokeWeight(5);
-  stroke(255, 255, 100);
+  strokeWeight(random(10, 12));
+  var yc = random(220, 255);
+  stroke(yc, yc, yc / 2);
   beginShape();
   $.each(bars, function(i, p) {
     vertex(p[0] * SC + DX, p[1] * SC + DY);
@@ -207,30 +407,48 @@ function draw() {
     }
   });
   endShape();
+  beginShape();
+  $.each(bars2, function(i, p) {
+    vertex(p[0] * SC + DX, p[1] * SC + DY);
+    var vv = sq(mouseX - (p[0] * SC + DX)) + sq(mouseY - (p[1] * SC + DY));
+    if (v > vv) {
+      v = vv;
+      vi = i;
+    }
+  });
+  endShape();
+  stroke(200, 200, 100, 100);
+  strokeWeight(5);
   ellipse(ant_x * SC + DX, ant_y * SC + DY, ant_r * 2 * SC, ant_r * 2 * SC);
+  image(ant, ant_x * SC + DX, ant_y * SC + DY, ant_r * 2 * SC, ant_r * 2 * SC);
 
   noStroke();
   fill(255);
   textSize(20);
   strokeWeight(1);
   var p = bars[vi];
-  text(int(p[0]) + '\n' + int(p[1]), p[0] * SC + DX, p[1] * SC + DY);
+  // text(int(p[0]) + '\n' + int(p[1]), p[0] * SC + DX, p[1] * SC + DY);
 
-  if (step == GAME) {} else {
+  if (step == GAME) {
+    score = moment(moment() - start_time);
+  } else {
     title();
   }
 
-  hiSCore = int(max(SCore, hiSCore));
-  $('#SCore').text(int(SCore));
-  $('#hiSCore').text(hiSCore);
+  $('#score').text(score.format('mm:ss.SS'));
+  $('#hiscore').text(hiscore.format('mm:ss.SS'));
 }
 
 function mousePressed() {
-  if (step == TITLE) {
-    if (result_frame == 30) result_frame--;
-    if (result_frame <= 0) {
-      step = GAME;
-      init();
+  if (0 <= mouseX && mouseX < width && 0 <= mouseY && mouseY < height) {
+    if (step == TITLE) {
+      if (result_frame == 30) result_frame--;
+      if (result_frame <= 0) {
+        frameCount = 0;
+        start_time = moment();
+        step = GAME;
+        init();
+      }
     }
   }
 }
