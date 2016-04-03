@@ -264,7 +264,6 @@ function mousePressed() {
     if (gameS == A) {
       $.each(qs, function(i, q) {
         if (q.ison) {
-          mouseX = mouseY = 0;
           if (q.correct) {
             score++;
             nextTanuki();
