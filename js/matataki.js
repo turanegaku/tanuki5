@@ -175,6 +175,7 @@ function title() {
     var dd = map(result_frame, 60, 0, sqrt(width), -sqrt(width));
     dd = dd * dd;
     textSize(50);
+    noStroke();
     fill(255, 255, 255, 200);
     rectMode(CENTER);
     rect(width / 2, height / 2 - 50, 250, 300, 30);
