@@ -230,7 +230,7 @@ function draw() {
   $('#hiscore').text(hiscore);
 }
 
-function mousePressed() {
+function mouseReleased() {
   if (0 <= mouseX && mouseX < width && 0 <= mouseY && mouseY < height) {
     if (step == TITLE) {
       if (result_frame == 30) result_frame--;
