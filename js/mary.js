@@ -201,10 +201,8 @@ function draw() {
     });
     if (select_frame === 0) {
       noStroke();
-      if (userl !== -1) {
-        fill(0, 0, 255, 100);
-        rect(width / 2 * userl, 0, width / 2, height);
-      }
+      fill(0, 0, 255, 100);
+      rect(width / 2 * userl, 0, width / 2, height);
 
       fill(200, 200, 255);
       text('which is many', width / 2, height / 3);
@@ -241,9 +239,8 @@ function mousePressed() {
         nextSheep();
         step = GAME;
       }
-    } else if (step == GAME && select_frame === 0 && userl !== -1) {
+    } else if (step == GAME && select_frame === 0) {
       if ((l_number - r_number) * (userl * 2 - 1) < 0) {
-        mouseX = -1;
         score++;
         nextSheep();
       } else {
