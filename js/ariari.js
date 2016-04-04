@@ -187,6 +187,15 @@ function init() {
   hard = $('.hard').prop('checked');
 }
 
+function prizeupdate() {
+  if (hiscore <= moment($('#q_score').text(), 'mm:ss.SS')) {
+    $('#queen').css('color', '#dd5');
+    if (hiscore <= moment($('#k_score').text(), 'mm:ss.SS')) {
+      $('#king').css('color', '#dd5');
+    }
+  }
+}
+
 function setup() {
   createCanvas(800, 450).parent('p5Canvas');
   raccoon1 = loadImage('./img/tanuki.png');
@@ -203,6 +212,7 @@ function setup() {
   var best = localStorageManager.getValue(document.title, 'best');
   if (best) {
     hiscore = moment(best, 'mmssSS');
+    prizeupdate();
   }
   $(window).on("beforeunload", function(e) {
     localStorageManager.setValue(document.title, 'best', hiscore.format('mmssSS'));
@@ -214,8 +224,10 @@ function setup() {
 function gameEnd() {
   step = TITLE;
   result_frame = 60;
-  if (hiscore > score)
+  if (hiscore > score) {
     hiscore = score;
+    prizeupdate();
+  }
   result_score = score;
 }
 

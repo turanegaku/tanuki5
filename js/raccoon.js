@@ -43,6 +43,15 @@ function init() {
   trg = 1000;
 }
 
+function prizeupdate() {
+  if (hiscore >= $('#q_score').text()) {
+    $('#queen').css('color', '#dd5');
+    if (hiscore >= $('#k_score').text()) {
+      $('#king').css('color', '#dd5');
+    }
+  }
+}
+
 function setup() {
   createCanvas(800, 450).parent('p5Canvas');
   fox.push(loadImage('./img/kitune.png'));
@@ -58,6 +67,7 @@ function setup() {
   var best = localStorageManager.getValue(document.title, 'best');
   if (best) {
     hiscore = int(best);
+    prizeupdate();
   }
   $(window).on("beforeunload", function(e) {
     localStorageManager.setValue(document.title, 'best', hiscore);
@@ -71,6 +81,7 @@ function gameEnd() {
   step = TITLE;
   result_score = int(score);
   result_frame = 60;
+  prizeupdate();
 }
 
 // draw title & result

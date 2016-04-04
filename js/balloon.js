@@ -116,6 +116,15 @@ function init() {
   apple_count = 0;
 }
 
+function prizeupdate() {
+  if (hims <= moment($('#q_score').text(), 'mm:ss.SS')) {
+    $('#queen').css('color', '#dd5');
+    if (hims <= moment($('#k_score').text(), 'mm:ss.SS')) {
+      $('#king').css('color', '#dd5');
+    }
+  }
+}
+
 function setup() {
   createCanvas(800, 450).parent('p5Canvas');
 
@@ -138,6 +147,7 @@ function setup() {
   var best = localStorageManager.getValue(document.title, 'best');
   if (best) {
     hims = moment(best, 'mmssSS');
+    prizeupdate();
   }
   var bestanu = localStorageManager.getValue(document.title, 'best');
   if (bestanu) {
@@ -154,8 +164,10 @@ function gameEnd() {
   step = TITLE;
   result_score = ms;
   result_frame = 60;
-  if (ms < hims)
+  if (ms < hims) {
     hims = ms;
+    prizeupdate();
+  }
 }
 
 // draw title & result
