@@ -30,7 +30,7 @@ var timed = 0;
 var limit = 0;
 var limit_start;
 
-function Object(i1, i2, x0, y0, correct) {
+function Objec(i1, i2, x0, y0, correct) {
   this.tanuans = i1;
   this.itemans = i2;
   this.x0 = x0;
@@ -125,7 +125,7 @@ function nextTanuki() {
   var lv = int(min(score / 5 + 1, 4));
   for (var i = 0; i < lv; i++) {
     for (var j = 0; j < tanuki.length; j++) {
-      qs.push(new Object(j, i, 0, 0, false));
+      qs.push(new Objec(j, i, 0, 0, false));
     }
   }
   qs = shuffle(qs);
@@ -152,12 +152,18 @@ function setup() {
   textAlign(CENTER);
   textSize(30);
   imageMode(CENTER);
-  init();
+  // init();
 
-  // hiscore = int(document.cookie);
-  // $(window).on("beforeunload", function(e) {
-  //   document.cookie = hiscore;
-  // });
+  var localStorageManager = new LocalStorageManager();
+  localStorageManager.open(document.title);
+  var best = localStorageManager.getValue(document.title, 'best');
+  if (best) {
+    hiscore = int(best);
+  }
+  $(window).on("beforeunload", function(e) {
+    localStorageManager.setValue(document.title, 'best', hiscore);
+    localStorageManager.close(document.title);
+  });
 }
 
 // call when game to title

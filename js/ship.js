@@ -102,10 +102,17 @@ function setup() {
   imageMode(CENTER);
   init();
 
-  // hiscore = int(document.cookie);
-  // $(window).on("beforeunload", function(e) {
-  //   document.cookie = hiscore;
-  // });
+  var localStorageManager = new LocalStorageManager();
+  localStorageManager.open(document.title);
+  var best = localStorageManager.getValue(document.title, 'best');
+  if (best) {
+    hiscore = int(best);
+  }
+  $(window).on("beforeunload", function(e) {
+    localStorageManager.setValue(document.title, 'best', hiscore);
+    localStorageManager.close(document.title);
+  });
+
 }
 
 // call when game to title

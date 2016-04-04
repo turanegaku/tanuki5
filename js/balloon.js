@@ -132,6 +132,21 @@ function setup() {
   init();
 
   imageMode(CENTER);
+
+  var localStorageManager = new LocalStorageManager();
+  localStorageManager.open(document.title);
+  var best = localStorageManager.getValue(document.title, 'best');
+  if (best) {
+    hims = moment(best, 'mmssSS');
+  }
+  var bestanu = localStorageManager.getValue(document.title, 'best');
+  if (bestanu) {
+    hitanu = int(bestanu);
+  }
+  $(window).on("beforeunload", function(e) {
+    localStorageManager.setValue(document.title, 'best', hims.format('mmssSS'));
+    localStorageManager.close(document.title);
+  });
 }
 
 // call when game to title
