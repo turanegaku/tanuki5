@@ -160,7 +160,7 @@ function Raccoon(x, y, dx, dy) {
   this.x = x;
   this.dx = dx;
   this.dy = dy;
-  this.ddy = 0.01;
+  this.ddy = 0.005;
 
   this.update = function() {
     this.x += this.dx;
@@ -263,9 +263,9 @@ function draw() {
   }
   if (ant_save >= 5) {
     if (frameCount % 60 === 0) {
-      raccoons.push(new Raccoon(135, random(150, 250), random(0.2, 0.5), random(-1, 0)));
+      raccoons.push(new Raccoon(135, random(150, 250), random(0.2, 0.5), random(-0.8, -0.1)));
     } else if (frameCount % 60 === 30) {
-      raccoons.push(new Raccoon(225, random(150, 250), -random(0.2, 0.5), random(-1, 0)));
+      raccoons.push(new Raccoon(225, random(150, 250), -random(0.2, 0.5), random(-0.8, -0.1)));
     }
   }
   if (step == GAME) {
@@ -283,16 +283,18 @@ function draw() {
     } else {
       ant_x += map(mouseX, width / 2 - 100, width / 2 + 100, -1, 1);
       ant_y += map(mouseY, height / 2 - 100, height / 2 + 100, -1, 1);
-    }
-    for (i = ant_save; i < saves.length; i++) {
-      if (sq(ant_x - saves[i][0]) + sq(ant_y - saves[i][1]) < sq(20)) {
-        if (ant_save + 1 == i)
-          ant_save = i;
+
+      for (i = ant_save; i < saves.length; i++) {
+        if (sq(ant_x - saves[i][0]) + sq(ant_y - saves[i][1]) < sq(20)) {
+          if (ant_save + 1 == i)
+            ant_save = i;
+        }
       }
-    }
-    if (135 + 10 < ant_x && ant_x < 225 - 10 && 100 + 10 < ant_y && ant_y < 150 - 10) {
-      if (ant_save >= 5) {
-        gameEnd();
+
+      if (135 + 10 < ant_x && ant_x < 225 - 10 && 100 + 10 < ant_y && ant_y < 150 - 10) {
+        if (ant_save >= 5) {
+          gameEnd();
+        }
       }
     }
   }
