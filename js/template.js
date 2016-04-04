@@ -37,6 +37,19 @@ function init() {
   score = 0;
 }
 
+var prize = 0;
+
+function prizeupdate() {
+  if (hiscore >= $('#q_score').text()) {
+    $('#queen').css('color', '#dd5');
+    prize = max(prize, 1);
+    if (hiscore >= $('#k_score').text()) {
+      $('#king').css('color', '#dd5');
+      prize = max(prize, 2);
+    }
+  }
+}
+
 function setup() {
   createCanvas(800, 450).parent('p5Canvas');
   raccoon1 = loadImage('./img/tanuki.png');
@@ -52,6 +65,7 @@ function setup() {
   if (best) {
     // hiscore = moment(best, 'mmssSS');
     hiscore = int(best);
+    prizeupdate();
   }
   $(window).on("beforeunload", function(e) {
     // localStorageManager.setValue(document.title, 'best', hiscore.format('mmssSS'));
@@ -65,6 +79,7 @@ function gameEnd() {
   step = TITLE;
   result_frame = 60;
   result_score = score;
+  prizeupdate();
 }
 
 // draw title & result

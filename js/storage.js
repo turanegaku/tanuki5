@@ -1,6 +1,4 @@
 function LocalStorageManager() {
-  this.bestScoreKey = "bestScore";
-
   this.storage = {};
 }
 

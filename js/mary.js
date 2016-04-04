@@ -83,11 +83,15 @@ function init() {
   userl = -1;
 }
 
+var prize = 0;
+
 function prizeupdate() {
   if (hiscore >= $('#q_score').text()) {
     $('#queen').css('color', '#dd5');
+    prize = max(prize, 1);
     if (hiscore >= $('#k_score').text()) {
       $('#king').css('color', '#dd5');
+      prize = max(prize, 2);
     }
   }
 }
@@ -111,7 +115,10 @@ function setup() {
     prizeupdate();
   }
   $(window).on("beforeunload", function(e) {
+    console.log(localStorageManager.storage);
     localStorageManager.setValue(document.title, 'best', hiscore);
+    localStorageManager.setValue(document.title, 'prize', prize);
+    console.log(localStorageManager.storage);
     localStorageManager.close(document.title);
   });
 }
