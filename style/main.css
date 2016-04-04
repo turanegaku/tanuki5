@@ -4,7 +4,7 @@ html, body {
   font-size: 18px;
   font-family: helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
 }
-h1 {
+h1, h2 {
   color: #660a37;
 }
 h1#title {
