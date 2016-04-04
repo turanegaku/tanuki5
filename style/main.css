@@ -35,6 +35,12 @@ img.link-img {
   overflow: hidden;
   position: relative;
 }
+.box:hover {
+  background: #d6feff;
+}
+.box:hover h1 {
+  color: #57c4ff;
+}
 .box:nth-child(odd) {
   margin-right: 20px;
 }
