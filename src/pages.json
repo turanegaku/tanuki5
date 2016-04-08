@@ -1,0 +1,50 @@
+[{
+  "title": "MARYYYY",
+  "name": "mary",
+  "outline": "多い方を選ぶやつ",
+  "rules": [
+    "<b>羊🐑</b> が多い方を選べ!!!",
+    "<b>羊🐑</b> 以外は関係ないぞ!!",
+    "少ない方を選んだり，遅すぎると <b> GameOver </b> だ!!!"
+  ],
+  "q_score": 15,
+  "k_score": 25
+}, {
+  "title": "ARIARI",
+  "name": "ariari",
+  "outline": "当たらないように通るやつ",
+  "rules": [],
+  "q_score": 15,
+  "k_score": 25
+}, {
+  "title": "mAtAtAki",
+  "name": "matataki",
+  "outline": "通ったやつを当てるやつ",
+  "rules": [],
+  "q_score": 15,
+  "k_score": 25
+}, {
+  "title": "KACHIKATI",
+  "name": "ship",
+  "outline": "落さないように運ぶやつ",
+  "rules": [],
+  "q_score": 15,
+  "k_score": 25
+}, {
+  "title": "Ballple!",
+  "name": "ballple",
+  "outline": "出来るだけ速く撃つやつ",
+  "addition": [
+    "最高タヌキ"
+  ],
+  "rules": [],
+  "q_score": 15,
+  "k_score": 25
+}, {
+  "title": "TANUKIGA5",
+  "name": "tanu5",
+  "outline": "永遠を目指して走るやつ",
+  "rules": [],
+  "q_score": 15,
+  "k_score": 25
+}]

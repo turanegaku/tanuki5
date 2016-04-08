@@ -1,0 +1,32 @@
+extends _frame.pug
+
+block body
+  div(align='center')
+    h1#title= title
+    h2 ルール
+    each rule in page.rules
+      p !{rule}
+    #p5Canvas
+
+    h2 スコア
+    h3#score 0
+    h2 ハイスコア
+    h3#hiscore 0
+    if page.addition
+      each ad in page.addition
+        h2= page.addition
+        h3 0
+
+    h2 prize
+    - var sp=' '
+    h3
+      span#queen ♛
+      | #{sp}
+      span#q_score= page.q_score
+    h3
+      span#king ♚
+      | #{sp}
+      span#k_score= page.k_score
+  script(src="./js/jquery-1.11.3.min.js" charset="utf-8")
+  script(src="./js/storage.js" charset="utf-8")
+  script(src="./js/prize.js" charset="utf-8")
