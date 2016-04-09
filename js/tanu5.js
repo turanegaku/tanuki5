@@ -37,7 +37,7 @@ var trg = 1000;
 var wj = false;
 
 function init() {
-  wj = !$('.wj').prop('checked');
+  wj = !$('#wj').prop('checked');
   score = 0;
   foxsx = [new Enemy(0, 900), new Enemy(0, 1800)];
   trg = 1000;

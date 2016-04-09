@@ -277,9 +277,9 @@ function draw() {
   }
   hitanu = max(hitanu, tanuki_count);
 
-  $('#score').text(score + ' / 10000');
-  $('#time').text(ms.format('mm:ss.SS'));
-  $('#hitime').text(hims.format('mm:ss.SS'));
+  $('#point').text(score + ' / 10000');
+  $('#score').text(ms.format('mm:ss.SS'));
+  $('#hiscore').text(hims.format('mm:ss.SS'));
   $('#hitanu').text(max($('#hitanu').text(), tanuki_count));
 }
 

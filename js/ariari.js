@@ -184,7 +184,7 @@ function init() {
   tanukihit = false;
   ant_nomove = 0;
 
-  hard = $('.hard').prop('checked');
+  hard = $('#hard').prop('checked');
 }
 
 var prize = 0;
