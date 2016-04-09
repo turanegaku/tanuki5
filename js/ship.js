@@ -264,7 +264,5 @@ function mousePressed() {
       step = GAME;
       init();
     }
-    step = GAME;
-    init();
   }
 }
