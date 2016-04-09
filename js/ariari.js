@@ -190,10 +190,11 @@ function init() {
 var prize = 0;
 
 function prizeupdate() {
-  if (hiscore <= moment($('#q_score').text(), 'mm:ss.SS')) {
+  var cmpms = moment(hiscore.format('mmssSS'), 'mmssSS');
+  if (cmpms <= moment($('#q_score').text(), 'mm:ss.SS')) {
     $('#queen').css('color', '#dd5');
     prize = max(prize, 1);
-    if (hiscore <= moment($('#k_score').text(), 'mm:ss.SS')) {
+    if (cmpms <= moment($('#k_score').text(), 'mm:ss.SS')) {
       $('#king').css('color', '#dd5');
       prize = max(prize, 2);
     }
