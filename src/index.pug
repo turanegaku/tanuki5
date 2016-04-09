@@ -6,14 +6,12 @@ block body
     div
       each page in pages
         .box
-          - var link = './link/' + page.name + '.png'
-          img.link-img(src='./link/'+page.name+'.png')
+          img.link-img(src='../link/'+page.name+'.png')
           h1
             |#{page.title}
             span.prize
           p= page.outline
-          - link = './' + page.name + '.html'
           a(href='./'+page.name+'.html')
-  script(src="./js/jquery-1.11.3.min.js" charset="utf-8")
-  script(src="./js/storage.js" charset="utf-8")
-  script(src="./js/prize.js" charset="utf-8")
+  script(src="../js/jquery-1.11.3.min.js" charset="utf-8")
+  script(src="../js/storage.js" charset="utf-8")
+  script(src="../js/prize.js" charset="utf-8")

@@ -11,7 +11,7 @@ gulp.task('index', function() {
       title: 'TANUKI GAMES',
       pages: pages,
     }))
-    .pipe(gulp.dest('dst/'));
+    .pipe(gulp.dest('./dst'));
 });
 
 gulp.task('pages', function() {
@@ -22,9 +22,9 @@ gulp.task('pages', function() {
         title: pages[i].title,
         page: pages[i],
       }))
-      .pipe(rename(pages[i].title + '.html'))
-      .pipe(gulp.dest('dst'));
+      .pipe(rename(pages[i].name + '.html'))
+      .pipe(gulp.dest('./dst'));
   }
 });
 
-// gulp.task('default', ['index', 'pages']);
+gulp.task('default', ['index', 'pages']);

@@ -1,50 +1,90 @@
-[{
-  "title": "MARYYYY",
-  "name": "mary",
-  "outline": "多い方を選ぶやつ",
-  "rules": [
-    "<b>羊🐑</b> が多い方を選べ!!!",
-    "<b>羊🐑</b> 以外は関係ないぞ!!",
-    "少ない方を選んだり，遅すぎると <b> GameOver </b> だ!!!"
-  ],
-  "q_score": 15,
-  "k_score": 25
-}, {
-  "title": "ARIARI",
-  "name": "ariari",
-  "outline": "当たらないように通るやつ",
-  "rules": [],
-  "q_score": 15,
-  "k_score": 25
-}, {
-  "title": "mAtAtAki",
-  "name": "matataki",
-  "outline": "通ったやつを当てるやつ",
-  "rules": [],
-  "q_score": 15,
-  "k_score": 25
-}, {
-  "title": "KACHIKATI",
-  "name": "ship",
-  "outline": "落さないように運ぶやつ",
-  "rules": [],
-  "q_score": 15,
-  "k_score": 25
-}, {
-  "title": "Ballple!",
-  "name": "ballple",
-  "outline": "出来るだけ速く撃つやつ",
-  "addition": [
-    "最高タヌキ"
-  ],
-  "rules": [],
-  "q_score": 15,
-  "k_score": 25
-}, {
-  "title": "TANUKIGA5",
-  "name": "tanu5",
-  "outline": "永遠を目指して走るやつ",
-  "rules": [],
-  "q_score": 15,
-  "k_score": 25
-}]
+[
+  {
+    "title": "MARYYYY",
+    "name": "mary",
+    "outline": "多い方を選ぶやつ",
+    "rules": [
+      "<b>羊🐑</b> が多い方を選べ!!!",
+      "<b>羊🐑</b> 以外は関係ないぞ!!",
+      "少ない方を選んだり，遅すぎると <b> GameOver </b> だ!!!"
+    ],
+    "q_score": 15,
+    "k_score": 25
+  },
+  {
+    "title": "ARIARI",
+    "name": "ariari",
+    "outline": "当たらないように通るやつ",
+    "rules": [
+      "<b>壁</b> や <b>障害物</b> にぶつからないように <b>ゴールへ向かえ!!!</b>",
+      "<input id='hard' type='checkbox'>NO SAVE(暇な人向け)"
+    ],
+    "q_score": "02:00.00",
+    "k_score": "00:45.00",
+    "option": {
+      "time": true
+    }
+  },
+  {
+    "title": "mAtAtAki",
+    "name": "matataki",
+    "outline": "通ったやつを当てるやつ",
+    "rules": [
+      "<b>お手本</b> と同じのを選べ!!"
+    ],
+    "q_score": 15,
+    "k_score": 25
+  },
+  {
+    "title": "KACHIKATI",
+    "name": "ship",
+    "outline": "落さないように運ぶやつ",
+    "rules": [
+      "<b>ウサギ</b> は マウス に <b>追従</b> するぞ!!!!",
+      "<b>泥舟</b> で沈みゆく <b>タヌキ</b> を <b>対岸</b> に 送り届けよう!!!!",
+      "<b>Life</b> がなくなると <b>Game Over</b> だ!!!!"
+    ],
+    "q_score": 20,
+    "k_score": 30
+  },
+  {
+    "title": "Ballple!",
+    "name": "ballple",
+    "outline": "出来るだけ速く撃つやつ",
+    "addition": [
+      {
+        "id": "hitanu",
+        "text": "最高タヌキ"
+      }
+    ],
+    "rules": [
+      "短い時間で <b>10000</b> 点ためろ!!!!!",
+      "<b>🎈風船</b> や <b>🍎リンゴ</b> を <b>クリック</b> で 撃つと <b>得点</b> が入るぞ!!!",
+      "それ以外を撃つと <b>減点</b> だぞ!!"
+    ],
+    "q_score": "02:30.00",
+    "k_score": "00:40.00",
+    "option": {
+      "time": true,
+      "point": true
+    }
+  },
+  {
+    "title": "TANUKIGA5",
+    "name": "tanu5",
+    "outline": "永遠を目指して走るやつ",
+    "rules": [
+      "<b>クリック</b> or <b>エンターキー</b> で <b>ジャンプ</b> だ!",
+      "障害物を避けろ!!!!",
+      "<b>二段ジャンプ</b>も出来るぞ! <input id='wj' type='checkbox'>禁止する(スマホ向け)"
+    ],
+    "checkbox": [
+      {
+        "id": "wj",
+        "text": "二段ジャンプを禁止する"
+      }
+    ],
+    "q_score": 2000,
+    "k_score": 4000
+  }
+]
