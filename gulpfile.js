@@ -11,6 +11,7 @@ gulp.task('index', () => {
     .pipe(plumber())
     .pipe(pug({
         'pretty': true,
+        'home': 'TANUKI GAMES',
         'title': 'TANUKI GAMES',
         'pages': pages,
     }))
@@ -23,6 +24,7 @@ gulp.task('pages', () => {
         .pipe(plumber())
         .pipe(pug({
             'pretty': true,
+            'home': 'TANUKI GAMES',
             'title': page.title,
             'page': page,
         }))

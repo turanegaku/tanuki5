@@ -1,7 +1,7 @@
 $(function() {
   var localStorageManager = new LocalStorageManager();
-  $('.box>h1').each(function(_, v) {
-    var title = $(v).text();
+  $('.card .card-title').each(function(_, v) {
+    var title = $(v).children('h4').text();
     localStorageManager.open(title);
     var prize = localStorageManager.getValue(title, 'prize');
     switch (prize) {

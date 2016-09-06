@@ -15,11 +15,11 @@ h1#title {
   float: left;
   margin-bottom: 20px;
 }
-.container {
-  width: 600px;
-  margin: 0 auto;
-  clear: both;
-}
+/* .container {      */
+/*   width: 600px;   */
+/*   margin: 0 auto; */
+/*   clear: both;    */
+/* }                 */
 img.link-img {
   width: 100%;
   height: auto;
@@ -37,6 +37,15 @@ img.link-img {
 }
 .box:hover {
   background: #d6feff;
+}
+.card {
+  box-shadow: 0 1px 2px #b6c7d9;
+}
+.card:hover .card-block {
+  background: #d6feff;
+}
+.card:hover .card-block *:not(.prize) {
+  color: #57c4ff;
 }
 .box:hover h1 {
   color: #57c4ff;

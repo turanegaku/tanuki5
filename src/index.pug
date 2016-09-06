@@ -2,16 +2,17 @@ extends frame.pug
 
 block body
   .container
-    h1#title= title
-    div
+    .row
       each page in pages
-        .box
-          img.link-img(src='./link/'+page.name+'.png')
-          h1
-            |#{page.title}
-            span.prize
-          p= page.outline
+        .col-sm-12.col-md-6.col-lg-4
           a(href='./'+page.name+'.html')
+            .card
+              img.card-img-top(src='./link/'+page.name+'.png' style='width:100%')
+              .card-block
+                .card-title
+                  h4(style='display:inline')= page.title
+                  h3(style='display:inline').prize
+                p.card-text= page.outline
 
 block include
   script(src="./js/storage.js" charset="utf-8")
