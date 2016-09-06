@@ -1,30 +1,40 @@
-var gulp = require('gulp');
-var pug = require('gulp-pug');
-var rename = require("gulp-rename");
+const gulp = require('gulp');
+const pug = require('gulp-pug');
+const rename = require('gulp-rename');
 
-var pages = require('./src/pages.json');
+const pages = require('./src/pages.json');
 
-gulp.task('index', function() {
-  gulp.src('./src/index.pug')
+
+gulp.task('index', () => {
+    gulp.src('./src/index.pug')
     .pipe(pug({
-      pretty: true,
-      title: 'TANUKI GAMES',
-      pages: pages,
+        'pretty': true,
+        'title': 'TANUKI GAMES',
+        'pages': pages,
     }))
-    .pipe(gulp.dest('./dst'));
+    .pipe(gulp.dest('./docs'));
 });
 
-gulp.task('pages', function() {
-  for (var i = 0; i < pages.length; i++) {
-    gulp.src('./src/_template.pug')
-      .pipe(pug({
-        pretty: true,
-        title: pages[i].title,
-        page: pages[i],
-      }))
-      .pipe(rename(pages[i].name + '.html'))
-      .pipe(gulp.dest('./dst'));
-  }
+gulp.task('pages', () => {
+    for (const page of pages) {
+        gulp.src('./src/_template.pug')
+        .pipe(pug({
+            'pretty': true,
+            'title': page.title,
+            'page': page,
+        }))
+        .pipe(rename(page.name + '.html'))
+        .pipe(gulp.dest('./docs'));
+    }
 });
 
-gulp.task('default', ['index', 'pages']);
+
+gulp.task('windex', () => {
+    gulp.watch(['./src/_frame.pug', './src/index.pug'], ['index']);
+});
+
+gulp.task('wpages', () => {
+    gulp.watch(['./src/_frame.pug', './src/_template.pug', './src/pages.json'], ['pages']);
+});
+
+gulp.task('default', ['windex', 'wpages']);
