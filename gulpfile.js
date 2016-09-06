@@ -1,5 +1,6 @@
 const gulp = require('gulp');
 const pug = require('gulp-pug');
+const sass = require('gulp-sass');
 const rename = require('gulp-rename');
 const plumber = require('gulp-plumber');
 
@@ -33,6 +34,12 @@ gulp.task('pages', () => {
     }
 });
 
+gulp.task('sass', () => {
+    gulp.src('./src/sass/*.sass')
+        .pipe(plumber())
+        .pipe(sass())
+        .pipe(gulp.dest('./docs/style'));
+});
 
 gulp.task('windex', ['index'], () => {
     gulp.watch(['./src/frame.pug', './src/index.pug'], ['index']);
