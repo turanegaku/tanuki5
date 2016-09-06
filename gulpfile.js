@@ -1,14 +1,18 @@
 const gulp = require('gulp');
 const pug = require('gulp-pug');
+const sass = require('gulp-sass');
 const rename = require('gulp-rename');
+const plumber = require('gulp-plumber');
 
 const pages = require('./src/pages.json');
 
 
 gulp.task('index', () => {
     gulp.src('./src/index.pug')
+    .pipe(plumber())
     .pipe(pug({
         'pretty': true,
+        'home': 'TANUKI GAMES',
         'title': 'TANUKI GAMES',
         'pages': pages,
     }))
@@ -17,9 +21,11 @@ gulp.task('index', () => {
 
 gulp.task('pages', () => {
     for (const page of pages) {
-        gulp.src('./src/_template.pug')
+        gulp.src('./src/template.pug')
+        .pipe(plumber())
         .pipe(pug({
             'pretty': true,
+            'home': 'TANUKI GAMES',
             'title': page.title,
             'page': page,
         }))
@@ -28,13 +34,19 @@ gulp.task('pages', () => {
     }
 });
 
-
-gulp.task('windex', () => {
-    gulp.watch(['./src/_frame.pug', './src/index.pug'], ['index']);
+gulp.task('sass', () => {
+    gulp.src('./src/sass/*.sass')
+        .pipe(plumber())
+        .pipe(sass())
+        .pipe(gulp.dest('./docs/style'));
 });
 
-gulp.task('wpages', () => {
-    gulp.watch(['./src/_frame.pug', './src/_template.pug', './src/pages.json'], ['pages']);
+gulp.task('windex', ['index'], () => {
+    gulp.watch(['./src/frame.pug', './src/index.pug'], ['index']);
+});
+
+gulp.task('wpages', ['pages'], () => {
+    gulp.watch(['./src/frame.pug', './src/template.pug', './src/pages.json'], ['pages']);
 });
 
 gulp.task('default', ['windex', 'wpages']);

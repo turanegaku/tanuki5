@@ -1,12 +1,16 @@
-extends _frame.pug
+extends frame.pug
 
 block body
   div(align='center')
-    h1= title
-    if page.rules
-      h2 ルール
-      each rule in page.rules
-        p !{rule}
+    .container
+      .jumbotron
+        h1.display-3= title
+        hr
+        if page.rules
+          h2 ルール
+          each rule in page.rules
+            p!= rule
+
     if page.option && page.option.point
       h2 ポイント
       h3#point 0
@@ -37,9 +41,9 @@ block body
       span#king ♚
       | #{sp}
       span#k_score= page.k_score
-  a(href='../') 他のゲームとか
-  script(src="./js/jquery-1.11.3.min.js" charset="utf-8")
-  script(src="./js/p5.min.js" charset="utf-8")
-  script(src="./js/moment.min.js" charset="utf-8")
+
+block include
+  script(src="./javascripts/p5.min.js" charset="utf-8")
+  script(src="./javascripts/moment.min.js" charset="utf-8")
   script(src="./js/storage.js" charset="utf-8")
   script(src="./js/" + page.name + ".js" charset="utf-8")

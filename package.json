@@ -18,8 +18,10 @@
   "homepage": "https://github.com/turanegaku/jump#readme",
   "devDependencies": {
     "gulp": "^3.9.1",
+    "gulp-plumber": "^1.1.0",
     "gulp-pug": "^1.1.0",
     "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.3.2",
     "pug": "^0.1.0"
   }
 }

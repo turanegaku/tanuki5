@@ -2,15 +2,23 @@
 <head>
   <meta charset="utf-8">
   <title>ARIARI</title>
+  <link rel="stylesheet" href="./style/bootstrap.min.css" type="text/css" charset="utf-8">
   <link rel="stylesheet" href="./style/main.css" type="text/css" charset="utf-8">
   <link rel="shortcut icon" href="./favicon.ico">
 </head>
 <body>
+  <nav class="navbar navbar-dark bg-primary navbar-full"><a class="navbar-brand" href="/">TANUKI GAMES</a>
+  </nav>
   <div align="center">
-    <h1>ARIARI</h1>
-    <h2>ルール</h2>
-    <p><b>壁</b> や <b>障害物</b> にぶつからないように <b>ゴールへ向かえ!!!</b></p>
-    <p><input id='hard' type='checkbox'>NO SAVE(暇な人向け)</p>
+    <div class="container">
+      <div class="jumbotron">
+        <h1 class="display-3">ARIARI</h1>
+        <hr>
+        <h2>ルール</h2>
+        <p><b>壁</b> や <b>障害物</b> にぶつからないように <b>ゴールへ向かえ!!!</b></p>
+        <p><input id='hard' type='checkbox'>NO SAVE(暇な人向け)</p>
+      </div>
+    </div>
     <div id="p5Canvas"></div>
     <h2>タイム</h2>
     <h3 id="score">0</h3>
@@ -19,10 +27,12 @@
     <h2>prize</h2>
     <h3><span id="queen">♛</span> <span id="q_score">02:00.00</span></h3>
     <h3><span id="king">♚</span> <span id="k_score">00:45.00</span></h3>
-  </div><a href="../">他のゲームとか</a>
-  <script src="./js/jquery-1.11.3.min.js" charset="utf-8"></script>
-  <script src="./js/p5.min.js" charset="utf-8"></script>
-  <script src="./js/moment.min.js" charset="utf-8"></script>
+  </div>
+  <script src="./javascripts/jquery-1.11.3.min.js" charset="utf-8"></script>
+  <script src="./javascripts/tether.min.js" charset="utf-8"></script>
+  <script src="./javascripts/bootstrap.min.js" charset="utf-8"></script>
+  <script src="./javascripts/p5.min.js" charset="utf-8"></script>
+  <script src="./javascripts/moment.min.js" charset="utf-8"></script>
   <script src="./js/storage.js" charset="utf-8"></script>
   <script src="./js/ariari.js" charset="utf-8"></script>
 </body>

@@ -1,17 +1,19 @@
-extends _frame.pug
+extends frame.pug
 
 block body
   .container
-    h1#title= title
-    div
+    .row
       each page in pages
-        .box
-          img.link-img(src='./link/'+page.name+'.png')
-          h1
-            |#{page.title}
-            span.prize
-          p= page.outline
+        .col-sm-12.col-md-6.col-lg-4
           a(href='./'+page.name+'.html')
-  script(src="./js/jquery-1.11.3.min.js" charset="utf-8")
+            .card
+              img.card-img-top.w100per(src='./link/'+page.name+'.png')
+              .card-block
+                .card-title
+                  h4(style='display:inline')= page.title
+                  h3(style='display:inline').prize
+                p.card-text= page.outline
+
+block include
   script(src="./js/storage.js" charset="utf-8")
   script(src="./js/prize.js" charset="utf-8")
