@@ -17,7 +17,7 @@ gulp.task('index', () => {
 
 gulp.task('pages', () => {
     for (const page of pages) {
-        gulp.src('./src/_template.pug')
+        gulp.src('./src/template.pug')
         .pipe(pug({
             'pretty': true,
             'title': page.title,
@@ -30,11 +30,11 @@ gulp.task('pages', () => {
 
 
 gulp.task('windex', () => {
-    gulp.watch(['./src/_frame.pug', './src/index.pug'], ['index']);
+    gulp.watch(['./src/frame.pug', './src/index.pug'], ['index']);
 });
 
 gulp.task('wpages', () => {
-    gulp.watch(['./src/_frame.pug', './src/_template.pug', './src/pages.json'], ['pages']);
+    gulp.watch(['./src/frame.pug', './src/template.pug', './src/pages.json'], ['pages']);
 });
 
 gulp.task('default', ['windex', 'wpages']);
