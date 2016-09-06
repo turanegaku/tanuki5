@@ -2,11 +2,15 @@ extends frame.pug
 
 block body
   div(align='center')
-    h1= title
-    if page.rules
-      h2 ルール
-      each rule in page.rules
-        p !{rule}
+    .container
+      .jumbotron
+        h1.display-3= title
+        hr
+        if page.rules
+          h2 ルール
+          each rule in page.rules
+            p!= rule
+
     if page.option && page.option.point
       h2 ポイント
       h3#point 0
