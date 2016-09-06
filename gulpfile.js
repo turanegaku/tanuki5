@@ -1,12 +1,14 @@
 const gulp = require('gulp');
 const pug = require('gulp-pug');
 const rename = require('gulp-rename');
+const plumber = require('gulp-plumber');
 
 const pages = require('./src/pages.json');
 
 
 gulp.task('index', () => {
     gulp.src('./src/index.pug')
+    .pipe(plumber())
     .pipe(pug({
         'pretty': true,
         'title': 'TANUKI GAMES',
@@ -18,6 +20,7 @@ gulp.task('index', () => {
 gulp.task('pages', () => {
     for (const page of pages) {
         gulp.src('./src/template.pug')
+        .pipe(plumber())
         .pipe(pug({
             'pretty': true,
             'title': page.title,
@@ -29,11 +32,11 @@ gulp.task('pages', () => {
 });
 
 
-gulp.task('windex', () => {
+gulp.task('windex', ['index'], () => {
     gulp.watch(['./src/frame.pug', './src/index.pug'], ['index']);
 });
 
-gulp.task('wpages', () => {
+gulp.task('wpages', ['pages'], () => {
     gulp.watch(['./src/frame.pug', './src/template.pug', './src/pages.json'], ['pages']);
 });
 
