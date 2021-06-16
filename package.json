@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/turanegaku/jump.git"
+    "url": "git+https://github.com/turanegaku/tanuki5.git"
   },
   "author": "turane_gaku",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/turanegaku/jump/issues"
+    "url": "https://github.com/turanegaku/tanuki5/issues"
   },
-  "homepage": "https://github.com/turanegaku/jump#readme",
+  "homepage": "https://github.com/turanegaku/tanuki5#readme",
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-plumber": "^1.1.0",
