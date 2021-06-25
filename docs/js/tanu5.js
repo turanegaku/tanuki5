@@ -36,6 +36,8 @@ var trg = 1000;
 // allow w jump
 var wj = false;
 
+var ismobile = navigator.userAgent.match(/iPhone|Android.+Mobile/);
+
 function init() {
   wj = !$('#wj').prop('checked');
   score = 0;
@@ -203,5 +205,7 @@ function keyPressed() {
 }
 
 function mousePressed() {
-  press();
+  if (!ismobile || event.type == 'touchstart') {
+    press();
+  }
 }

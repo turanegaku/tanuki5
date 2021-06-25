@@ -30,6 +30,8 @@ var SCALE_SHEEP = 80;
 
 var limit;
 
+var ismobile = navigator.userAgent.match(/iPhone|Android.+Mobile/);
+
 function Sheep(dx) {
   this.y = random(height / 3, height * 2 / 3);
   this.x = width / 2;
@@ -220,6 +222,9 @@ function draw() {
   noStroke();
   if (step == GAME) {
     userl = int(mouseX / (width / 2));
+    if (ismobile && touches.length == 0) {
+      userl = -1;
+    }
     $.each(animals, function(_, v) {
       v.draw();
     });
