@@ -12,6 +12,9 @@ var raccoondy = 0;
 var raccoonv = 0;
 var raccoonjump = 0;
 
+// ground scroll, advanced by the same amount the enemies move
+var scrollX = 0;
+
 var result_score;
 var result_frame = 0;
 
@@ -36,12 +39,11 @@ var trg = 1000;
 // allow w jump
 var wj = false;
 
-var ismobile = matchMedia('(pointer: coarse)').matches;
-
 function init() {
   wj = !el('wj').checked;
   score = 0;
   foxsx = [new Enemy(0, 900), new Enemy(0, 1800)];
+  scrollX = 0;
   trg = 1000;
 }
 
@@ -91,7 +93,7 @@ function title() {
   } else {
     fill(0);
     noStroke();
-    text("Click Start!!", width / 2, height / 2);
+    text("Tap or Click!!", width / 2, height / 2);
   }
 }
 
@@ -123,12 +125,16 @@ function draw() {
   }
 
   // draw ground
+  stroke(0);
+  fill(220);
   beginShape();
+  vertex(-100, height);
   for (var i = -100; i < 900; i += 10) {
-    vertex(i, raccoonY + 120 + sin(radians(i + score * scored2)) * 10);
+    vertex(i, raccoonY + 120 + sin(radians(i + scrollX)) * 10);
   }
-  vertex();
-  endShape();
+  vertex(900, height);
+  endShape(CLOSE);
+  noStroke();
   // draw animals
   if (int((score / 10)) % 2 === 0 || raccoonjump > 0) {
     image(raccoon, raccoonX, raccoonY - raccoondy, SIZE, SIZE);
@@ -152,6 +158,7 @@ function draw() {
     }
 
     // fox move
+    scrollX += scored2 * scored;
     foxsx.forEach(function(foxx, i) {
       foxsx[i].x -= scored2 * scored;
       if (foxsx[i].x < -200) {
@@ -191,8 +198,22 @@ function keyPressed() {
   }
 }
 
+function onCanvas() {
+  return 0 <= mouseX && mouseX < width && 0 <= mouseY && mouseY < height;
+}
+
+// p5 1.11 hands touches to touchStarted only - it never falls back to
+// mousePressed - and it swallows the mouse event the tap would synthesise.
+// So a phone needs this one; returning false also kills scroll/zoom on the tap.
+function touchStarted() {
+  if (onCanvas()) {
+    press();
+    return false;
+  }
+}
+
 function mousePressed() {
-  if (!ismobile || event.type == 'touchstart') {
+  if (onCanvas()) {
     press();
   }
 }
