@@ -1,4 +1,4 @@
-// node test_storage.js
+// node tests/storage.test.js
 // Checks the two pieces of storage.js that carry real logic: the time
 // formatting that replaced moment.js, and the prize threshold comparison.
 const assert = require('assert');

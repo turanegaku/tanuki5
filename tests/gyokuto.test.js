@@ -1,4 +1,4 @@
-// node test_gyokuto.js
+// node tests/gyokuto.test.js
 // Guards the one property GYOKUTO is built around: the theoretical clear time
 // must not move when the clouds do. Everything here is the game's own numbers,
 // read straight out of docs/js/gyokuto.js.

@@ -76,7 +76,7 @@ function cloudHide() {
   return map(moon, 0, MOON_NEED, 1.6, 2.8);
 }
 
-// --- pure rates (no p5, exercised by test_gyokuto.js) -----------------------
+// --- pure rates (no p5, exercised by tests/gyokuto.test.js) -----------------------
 
 function depthAt(dist) {
   var d = (FIRE_R - dist) / (FIRE_R - FIRE_CORE);
