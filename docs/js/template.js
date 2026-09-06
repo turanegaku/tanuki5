@@ -37,17 +37,8 @@ function init() {
   score = 0;
 }
 
-var prize = 0;
-
 function prizeupdate() {
-  if (hiscore >= $('#q_score').text()) {
-    $('#queen').css('color', '#dd5');
-    prize = max(prize, 1);
-    if (hiscore >= $('#k_score').text()) {
-      $('#king').css('color', '#dd5');
-      prize = max(prize, 2);
-    }
-  }
+  updatePrize(hiscore);
 }
 
 function setup() {
@@ -59,18 +50,13 @@ function setup() {
   imageMode(CENTER);
   init();
 
-  var localStorageManager = new LocalStorageManager();
-  localStorageManager.open(document.title);
-  var best = localStorageManager.getValue(document.title, 'best');
-  if (best) {
-    // hiscore = moment(best, 'mmssSS');
-    hiscore = int(best);
+  var best = loadBest();
+  if (best !== null) {
+    hiscore = best;
     prizeupdate();
   }
-  $(window).on("beforeunload", function(e) {
-    // localStorageManager.setValue(document.title, 'best', hiscore.format('mmssSS'));
-    localStorageManager.setValue(document.title, 'best', hiscore);
-    localStorageManager.close(document.title);
+  onExit(function () {
+    saveBest(hiscore);
   });
 }
 
@@ -104,7 +90,7 @@ function draw() {
   background(255, 255, 255);
 
   if (step == GAME) {
-    if (frameCount % 300) {
+    if (frameCount % 300 === 0) {
       gameEnd();
     }
   }
@@ -114,8 +100,8 @@ function draw() {
   }
 
   hiscore = int(max(score, hiscore));
-  $('#score').text(int(score));
-  $('#hiscore').text(hiscore);
+  setText('score', int(score));
+  setText('hiscore', hiscore);
 }
 
 function mousePressed() {

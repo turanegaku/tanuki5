@@ -1,17 +1,7 @@
-$(function() {
-  var localStorageManager = new LocalStorageManager();
-  $('.card .card-title').each(function(_, v) {
-    var title = $(v).children('h4').text();
-    localStorageManager.open(title);
-    var prize = localStorageManager.getValue(title, 'prize');
-    switch (prize) {
-      case 1:
-        $(v).children('.prize').append('♛');
-        break;
-      case 2:
-        $(v).children('.prize').append('♚');
-        break;
-      default:
-    }
+addEventListener('DOMContentLoaded', function () {
+  var marks = {1: '♛', 2: '♚'};
+  document.querySelectorAll('.card .card-title').forEach(function (card) {
+    var mark = marks[loadGame(card.querySelector('h4').textContent).prize];
+    if (mark) card.querySelector('.prize').textContent = mark;
   });
 });

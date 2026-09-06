@@ -135,23 +135,14 @@ function nextTanuki() {
   var a = TWO_PI / qs.length;
   var da = random(a);
   if (score < 3) da = 0;
-  $.each(qs, function(i, q) {
+  qs.forEach(function(q, i) {
     q.x0 = width / 2 + cos(a * i + da) * 150;
     q.y0 = height / 2 + sin(a * i + da) * 150;
   });
 }
 
-var prize = 0;
-
 function prizeupdate() {
-  if (hiscore >= $('#q_score').text()) {
-    $('#queen').css('color', '#dd5');
-    prize = max(prize, 1);
-    if (hiscore >= $('#k_score').text()) {
-      $('#king').css('color', '#dd5');
-      prize = max(prize, 2);
-    }
-  }
+  updatePrize(hiscore);
 }
 
 function setup() {
@@ -167,17 +158,13 @@ function setup() {
   imageMode(CENTER);
   // init();
 
-  var localStorageManager = new LocalStorageManager();
-  localStorageManager.open(document.title);
-  var best = localStorageManager.getValue(document.title, 'best');
-  if (best) {
-    hiscore = int(best);
+  var best = loadBest();
+  if (best !== null) {
+    hiscore = best;
     prizeupdate();
   }
-  $(window).on("beforeunload", function(e) {
-    localStorageManager.setValue(document.title, 'best', hiscore);
-    localStorageManager.setValue(document.title, 'prize', prize);
-    localStorageManager.close(document.title);
+  onExit(function () {
+    saveBest(hiscore);
   });
 }
 
@@ -232,7 +219,7 @@ function draw() {
         fill(0);
         if (--tanuki_time <= 0) {
           gameS = A;
-          limit = moment().add(map(min(score, 20), 0, 20, 60, 5), 's');
+          limit = Date.now() + map(min(score, 20), 0, 20, 60, 5) * 1000;
         }
       }
     }
@@ -248,16 +235,16 @@ function draw() {
   if (step == GAME) {
     if (gameS == A) {
       timed += 0.001 * score;
-      $.each(qs, function(i, q) {
+      qs.forEach(function(q, i) {
         q.update();
         q.draw();
       });
-      var now = moment();
-      if (limit.isBefore(now)) {
+      var left = limit - Date.now();
+      if (left < 0) {
         result_select = -1;
         gameEnd();
       }
-      var dt = int(limit.diff(now) / 1000) + 1;
+      var dt = int(left / 1000) + 1;
       fill(255, 200, 200);
       text(dt, width / 2 + 2, height / 2 + 2);
       text(dt, width / 2 - 2, height / 2 - 2);
@@ -271,8 +258,8 @@ function draw() {
   }
 
   hiscore = int(max(score, hiscore));
-  $('#score').text(int(score));
-  $('#hiscore').text(hiscore);
+  setText('score', int(score));
+  setText('hiscore', hiscore);
 }
 
 function mousePressed() {
@@ -284,7 +271,7 @@ function mousePressed() {
     }
   } else if (step == GAME) {
     if (gameS == A) {
-      $.each(qs, function(i, q) {
+      qs.forEach(function(q, i) {
         if (q.ison) {
           if (q.correct) {
             score++;

@@ -29,3 +29,17 @@ img.w100per
 .prize
   color: #dd5;
 
+
+// the canvas is a fixed 800x450; let it shrink to fit narrow screens.
+// !important is needed: p5 writes width/height straight onto the element's
+// style attribute. Scaling it in CSS keeps the game's 800x450 coordinates.
+#p5Canvas canvas
+  max-width: 100% !important;
+  height: auto !important;
+  // dragging and holding are inputs here, not gestures to scroll the page
+  touch-action: none;
+
+// display-3 is ~4.5rem: one long game title alone is wider than a phone
+@media (max-width: 575px)
+  .display-3
+    font-size: 2.5rem;

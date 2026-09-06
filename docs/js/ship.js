@@ -90,17 +90,8 @@ function init() {
   f = 600;
 }
 
-var prize = 0;
-
 function prizeupdate() {
-  if (hiscore >= $('#q_score').text()) {
-    $('#queen').css('color', '#dd5');
-    prize = max(prize, 1);
-    if (hiscore >= $('#k_score').text()) {
-      $('#king').css('color', '#dd5');
-      prize = max(prize, 2);
-    }
-  }
+  updatePrize(hiscore);
 }
 
 function setup() {
@@ -115,17 +106,13 @@ function setup() {
   imageMode(CENTER);
   init();
 
-  var localStorageManager = new LocalStorageManager();
-  localStorageManager.open(document.title);
-  var best = localStorageManager.getValue(document.title, 'best');
-  if (best) {
-    hiscore = int(best);
+  var best = loadBest();
+  if (best !== null) {
+    hiscore = best;
     prizeupdate();
   }
-  $(window).on("beforeunload", function(e) {
-    localStorageManager.setValue(document.title, 'best', hiscore);
-    localStorageManager.setValue(document.title, 'prize', prize);
-    localStorageManager.close(document.title);
+  onExit(function () {
+    saveBest(hiscore);
   });
 
 }
@@ -171,7 +158,7 @@ function draw() {
       f = map(min(score, 20), 0, 20, 400, 60);
       raccoons.push(new Raccoon(random(150, width - 100), 0));
     }
-    $.each(raccoons, function(i, v) {
+    raccoons.forEach(function(v, i) {
       v.update();
       // this is two action on tanuki and rabbit collision
       if (v.with_ship) {
@@ -221,7 +208,7 @@ function draw() {
 
   // draw tanuki
   if (step == GAME) {
-    $.each(raccoons, function(i, v) {
+    raccoons.forEach(function(v, i) {
       v.draw();
     });
   }
@@ -251,8 +238,8 @@ function draw() {
 
 
   hiscore = int(max(score, hiscore));
-  $('#score').text(int(score));
-  $('#hiscore').text(hiscore);
+  setText('score', int(score));
+  setText('hiscore', hiscore);
 
   prabbitx = rabbitx;
 }

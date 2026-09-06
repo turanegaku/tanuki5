@@ -3,8 +3,10 @@ var combo = 0;
 var hitanu = 0;
 
 var start_time;
-var ms = moment(0);
-var hims = moment(1800000);
+bestIsTime = true;
+
+var ms = 0;
+var hims = 1800000;
 
 var mx = 0;
 var my = 0;
@@ -106,7 +108,7 @@ var GAME = 1;
 var step = TITLE;
 
 function init() {
-  start_time = moment();
+  start_time = Date.now();
   score = 0;
   frameCount = 0;
   combo = 0;
@@ -116,18 +118,8 @@ function init() {
   apple_count = 0;
 }
 
-var prize = 0;
-
 function prizeupdate() {
-  var cmpms = moment(hims.format('mmssSS'), 'mmssSS');
-  if (cmpms <= moment($('#q_score').text(), 'mm:ss.SS')) {
-    $('#queen').css('color', '#dd5');
-    prize = max(prize, 1);
-    if (cmpms <= moment($('#k_score').text(), 'mm:ss.SS')) {
-      $('#king').css('color', '#dd5');
-      prize = max(prize, 2);
-    }
-  }
+  updatePrize(hims);
 }
 
 function setup() {
@@ -147,21 +139,17 @@ function setup() {
 
   imageMode(CENTER);
 
-  var localStorageManager = new LocalStorageManager();
-  localStorageManager.open(document.title);
-  var best = localStorageManager.getValue(document.title, 'best');
-  if (best) {
-    hims = moment(best, 'mmssSS');
+  var best = loadBest();
+  if (best !== null) {
+    hims = best;
     prizeupdate();
   }
-  var bestanu = localStorageManager.getValue(document.title, 'best');
-  if (bestanu) {
-    hitanu = int(bestanu);
-  }
-  $(window).on("beforeunload", function(e) {
-    localStorageManager.setValue(document.title, 'best', hims.format('mmssSS'));
-    localStorageManager.setValue(document.title, 'prize', prize);
-    localStorageManager.close(document.title);
+  hitanu = loadGame(document.title).tanuki || 0;
+  onExit(function () {
+    saveBest(hims);
+    var data = loadGame(document.title);
+    data.tanuki = hitanu;
+    saveGame(document.title, data);
   });
 }
 
@@ -189,7 +177,7 @@ function title() {
     for (var i = 0; i < tanuki_count; i++) {
       image(raccoon_img, width / 3 + dd + i * 50, height * 4 / 5, 60, 60);
     }
-    text(result_score.format('mm:ss.SS'), width / 2 + dd, height / 5);
+    text(fmtTime(result_score), width / 2 + dd, height / 5);
     for (i = 0; i < 3; i++) {
       image(balloon_img[i], width / 2 - 100 + dd + i * 30, height * 2 / 5, 120, 120);
     }
@@ -237,10 +225,10 @@ function draw() {
     shoot_time--;
   }
   if (step == GAME) {
-    $.each(balloons, function(i, v) {
+    balloons.forEach(function(v, i) {
       v.update();
     });
-    $.each(balloons, function(i, v) {
+    balloons.forEach(function(v, i) {
       v.draw();
     });
   } else if (step == TITLE) {
@@ -274,14 +262,14 @@ function draw() {
   });
 
   if (step == GAME) {
-    ms = moment(moment() - start_time);
+    ms = Date.now() - start_time;
   }
   hitanu = max(hitanu, tanuki_count);
 
-  $('#point').text(score + ' / 10000');
-  $('#score').text(ms.format('mm:ss.SS'));
-  $('#hiscore').text(hims.format('mm:ss.SS'));
-  $('#hitanu').text(max($('#hitanu').text(), tanuki_count));
+  setText('point', score + ' / 10000');
+  setText('score', fmtTime(ms));
+  setText('hiscore', fmtTime(hims));
+  setText('hitanu', hitanu);
 }
 
 function shoot() {
@@ -293,7 +281,7 @@ function shoot() {
       return true;
     return false;
   });
-  $.each(del_bal, function(i, v) {
+  del_bal.forEach(function(v, i) {
     v.add_apple();
   });
   if (del_bal.length === 0) {
