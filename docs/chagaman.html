@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CHAGAMAN</title>
+    <link rel="stylesheet" href="./style/bootstrap.min.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="./style/main.css" type="text/css" charset="utf-8">
+    <link rel="shortcut icon" href="./favicon.ico">
+  </head>
+  <body>
+    <nav class="navbar navbar-dark bg-primary navbar-full"><a class="navbar-brand" href="./">TANUKI GAMES</a>
+    </nav>
+    <div align="center">
+      <div class="container">
+        <div class="jumbotron">
+          <h1 class="display-3">CHAGAMAN</h1>
+          <hr>
+          <h2>ルール</h2>
+          <p><b>押しっぱなし</b> で <b>茶釜</b> に化け続けろ!!!!</p>
+          <p><b>和尚</b> が見ていない隙 <b>だけ</b> 手を緩めて熱を逃がせ!!!</p>
+          <p><b>茶碗</b> を満たせば <b>熱</b> は全部逃げるぞ!!</p>
+        </div>
+      </div>
+      <div id="p5Canvas"></div>
+      <h2>スコア</h2>
+      <h3 id="score">0</h3>
+      <h2>ハイスコア</h2>
+      <h3 id="hiscore">0</h3>
+      <h2>prize</h2>
+      <h3><span id="queen">♛</span> <span id="q_score">6</span></h3>
+      <h3><span id="king">♚</span> <span id="k_score">12</span></h3>
+    </div>
+    <script src="./javascripts/p5.min.js" charset="utf-8"></script>
+    <script src="./js/storage.js" charset="utf-8"></script>
+    <script src="./js/chagaman.js" charset="utf-8"></script>
+  </body>
+</html>
