@@ -109,5 +109,19 @@
     ],
     "q_score": 6,
     "k_score": 12
+  },
+  {
+    "title": "GYOKUTO",
+    "name": "gyokuto",
+    "outline": "揺れる炎に居続けるやつ",
+    "rules": [
+      "その身を <b>焦がし</b> 、<b>月</b> に捧げよ。",
+      "<b>月の光</b> が強いほど、多く届く。"
+    ],
+    "q_score": "00:20.00",
+    "k_score": "00:12.00",
+    "option": {
+      "time": true
+    }
   }
 ]

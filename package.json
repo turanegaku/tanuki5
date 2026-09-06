@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node build.js",
     "watch": "node build.js --watch",
-    "test": "node test_storage.js"
+    "test": "node test_storage.js && node test_gyokuto.js"
   },
   "repository": {
     "type": "git",
