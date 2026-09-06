@@ -1,1 +1,6 @@
 node_modules/
+
+# one-off asset preparation, not part of the site
+.venv/
+tools/
+docs/img/Gemini_Generated_Image_*.jpeg

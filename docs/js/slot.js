@@ -114,17 +114,8 @@ function init() {
   }
 }
 
-var prize = 0;
-
 function prizeupdate() {
-  if (hiscore >= $('#q_score').text()) {
-    $('#queen').css('color', '#dd5');
-    prize = max(prize, 1);
-    if (hiscore >= $('#k_score').text()) {
-      $('#king').css('color', '#dd5');
-      prize = max(prize, 2);
-    }
-  }
+  updatePrize(hiscore);
 }
 
 function setup() {
@@ -165,19 +156,13 @@ function setup() {
   imageMode(CENTER);
   init();
 
-  var localStorageManager = new LocalStorageManager();
-  localStorageManager.open(document.title);
-  var best = localStorageManager.getValue(document.title, 'best');
-  if (best) {
-    hiscore = int(best);
+  var best = loadBest();
+  if (best !== null) {
+    hiscore = best;
     prizeupdate();
   }
-  $(window).on("beforeunload", function(e) {
-    console.log(localStorageManager.storage);
-    localStorageManager.setValue(document.title, 'best', hiscore);
-    localStorageManager.setValue(document.title, 'prize', prize);
-    console.log(localStorageManager.storage);
-    localStorageManager.close(document.title);
+  onExit(function () {
+    saveBest(hiscore);
   });
 }
 
@@ -196,7 +181,7 @@ function draw() {
   rect(width / 2 - 45, height / 2 - 45 - 25, 90, 90);
   noStroke();
 
-  $.each(effects, (_, v) => {
+  effects.forEach((v, _) => {
     v.update();
   })
   for (var i = 0; i < effects.length; i++) {
@@ -205,15 +190,15 @@ function draw() {
     }
   }
 
-  $.each(effects, (_, v) => {
+  effects.forEach((v, _) => {
     v.draw();
   })
 
-  $.each(slot, (_, v) => {
+  slot.forEach((v, _) => {
     v.update();
   });
 
-  $.each(slot, (_, v) => {
+  slot.forEach((v, _) => {
     v.draw();
   });
 
@@ -233,13 +218,13 @@ function mousePressed() {
               effects.push(new Effect('hiscore!!!', -100, 100, 200, 100));
               hiscore = score;
             }
-            $('#score').text(int(score));
-            $('#hiscore').text(hiscore);
+            setText('score', int(score));
+            setText('hiscore', hiscore);
           } else {
             score=0;
             effects.push(new Effect('0', 100, 255, 0, 0));
-            $('#score').text(int(score));
-            $('#hiscore').text(hiscore);
+            setText('score', int(score));
+            setText('hiscore', hiscore);
           }
           break;
         }

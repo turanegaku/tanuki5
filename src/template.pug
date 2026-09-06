@@ -28,8 +28,8 @@ block body
       h3#hiscore 0
     if page.addition
       each ad in page.addition
-        h2(id="#{ad.id}")= ad.text
-        h3 0
+        h2= ad.text
+        h3(id=ad.id) 0
 
     h2 prize
     - var sp=' '
@@ -44,6 +44,5 @@ block body
 
 block include
   script(src="./javascripts/p5.min.js" charset="utf-8")
-  script(src="./javascripts/moment.min.js" charset="utf-8")
   script(src="./js/storage.js" charset="utf-8")
   script(src="./js/" + page.name + ".js" charset="utf-8")

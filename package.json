@@ -2,9 +2,11 @@
   "name": "tanuki_games",
   "version": "1.0.0",
   "description": "game of tanuki",
-  "main": "index.js",
+  "main": "build.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node build.js",
+    "watch": "node build.js --watch",
+    "test": "node test_storage.js"
   },
   "repository": {
     "type": "git",
@@ -17,11 +19,7 @@
   },
   "homepage": "https://github.com/turanegaku/tanuki5#readme",
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-plumber": "^1.1.0",
-    "gulp-pug": "^1.1.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-sass": "^2.3.2",
-    "pug": "^3.0.1"
+    "pug": "^3.0.3",
+    "sass": "^1.93.2"
   }
 }

@@ -1,6 +1,8 @@
-var hiscore = moment(1800000);
-var score = moment(0);
-var start_time = moment();
+bestIsTime = true;
+
+var hiscore = 1800000;
+var score = 0;
+var start_time = Date.now();
 
 var raccoon1;
 var raccoon2;
@@ -184,21 +186,11 @@ function init() {
   tanukihit = false;
   ant_nomove = 0;
 
-  hard = $('#hard').prop('checked');
+  hard = el('hard').checked;
 }
 
-var prize = 0;
-
 function prizeupdate() {
-  var cmpms = moment(hiscore.format('mmssSS'), 'mmssSS');
-  if (cmpms <= moment($('#q_score').text(), 'mm:ss.SS')) {
-    $('#queen').css('color', '#dd5');
-    prize = max(prize, 1);
-    if (cmpms <= moment($('#k_score').text(), 'mm:ss.SS')) {
-      $('#king').css('color', '#dd5');
-      prize = max(prize, 2);
-    }
-  }
+  updatePrize(hiscore);
 }
 
 function setup() {
@@ -212,17 +204,13 @@ function setup() {
   imageMode(CENTER);
   init();
 
-  var localStorageManager = new LocalStorageManager();
-  localStorageManager.open(document.title);
-  var best = localStorageManager.getValue(document.title, 'best');
-  if (best) {
-    hiscore = moment(best, 'mmssSS');
+  var best = loadBest();
+  if (best !== null) {
+    hiscore = best;
     prizeupdate();
   }
-  $(window).on("beforeunload", function(e) {
-    localStorageManager.setValue(document.title, 'best', hiscore.format('mmssSS'));
-    localStorageManager.setValue(document.title, 'prize', prize);
-    localStorageManager.close(document.title);
+  onExit(function () {
+    saveBest(hiscore);
   });
 }
 
@@ -247,7 +235,7 @@ function title() {
     textSize(50);
     fill(255);
     text('RESULT', width / 2 + dd, height / 5);
-    text(result_score.format('mm:ss.SS'), width / 2 + dd, height * 3 / 5);
+    text(fmtTime(result_score), width / 2 + dd, height * 3 / 5);
     if (hard) {
       image(cong, width / 2 + dd, height * 2 / 5, 100, 100);
     }
@@ -368,7 +356,7 @@ function draw() {
       }
     } else if (!tanukihit) {
       // draw hit bar
-      $.each(ant_hitbar, function(_, i) {
+      ant_hitbar.forEach(function(i, _) {
         strokeWeight(50);
         stroke(255, 100, 100);
         if (i >= 0)
@@ -380,7 +368,7 @@ function draw() {
 
     // hit tanuki
     if (!tanukihit)
-      $.each(raccoons, function(_, v) {
+      raccoons.forEach(function(v, _) {
         if (sq(ant_x - v.x) + sq(ant_y - v.y) < sq(8)) {
           tanukihit = true;
           hit_tanuki = v;
@@ -389,7 +377,7 @@ function draw() {
       });
   }
   // update tanuki
-  $.each(raccoons, function(_, v) {
+  raccoons.forEach(function(v, _) {
     v.update();
   });
   raccoons = raccoons.filter(function(v) {
@@ -402,7 +390,7 @@ function draw() {
     ellipse(hit_tanuki.x * SC + DX, hit_tanuki.y * SC + DY, 50, 50);
   }
   // draw tanuki
-  $.each(raccoons, function(_, v) {
+  raccoons.forEach(function(v, _) {
     v.draw(DX, DY, SC);
   });
 
@@ -424,7 +412,7 @@ function draw() {
   var yc = random(220, 255);
   stroke(yc, yc, yc / 2);
   beginShape();
-  $.each(bars, function(i, p) {
+  bars.forEach(function(p, i) {
     vertex(p[0] * SC + DX, p[1] * SC + DY);
     var vv = sq(mouseX - (p[0] * SC + DX)) + sq(mouseY - (p[1] * SC + DY));
     if (v > vv) {
@@ -434,7 +422,7 @@ function draw() {
   });
   endShape();
   beginShape();
-  $.each(bars2, function(i, p) {
+  bars2.forEach(function(p, i) {
     vertex(p[0] * SC + DX, p[1] * SC + DY);
     var vv = sq(mouseX - (p[0] * SC + DX)) + sq(mouseY - (p[1] * SC + DY));
     if (v > vv) {
@@ -456,13 +444,13 @@ function draw() {
   // text(int(p[0]) + '\n' + int(p[1]), p[0] * SC + DX, p[1] * SC + DY);
 
   if (step == GAME) {
-    score = moment(moment() - start_time);
+    score = Date.now() - start_time;
   } else {
     title();
   }
 
-  $('#score').text(score.format('mm:ss.SS'));
-  $('#hiscore').text(hiscore.format('mm:ss.SS'));
+  setText('score', fmtTime(score));
+  setText('hiscore', fmtTime(hiscore));
 }
 
 function mousePressed() {
@@ -471,7 +459,7 @@ function mousePressed() {
       if (result_frame == 30) result_frame--;
       if (result_frame <= 0) {
         frameCount = 0;
-        start_time = moment();
+        start_time = Date.now();
         step = GAME;
         init();
       }

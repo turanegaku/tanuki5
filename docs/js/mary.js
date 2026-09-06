@@ -30,7 +30,7 @@ var SCALE_SHEEP = 80;
 
 var limit;
 
-var ismobile = navigator.userAgent.match(/iPhone|Android.+Mobile/);
+var ismobile = matchMedia('(pointer: coarse)').matches;
 
 function Sheep(dx) {
   this.y = random(height / 3, height * 2 / 3);
@@ -85,17 +85,8 @@ function init() {
   userl = -1;
 }
 
-var prize = 0;
-
 function prizeupdate() {
-  if (hiscore >= $('#q_score').text()) {
-    $('#queen').css('color', '#dd5');
-    prize = max(prize, 1);
-    if (hiscore >= $('#k_score').text()) {
-      $('#king').css('color', '#dd5');
-      prize = max(prize, 2);
-    }
-  }
+  updatePrize(hiscore);
 }
 
 function setup() {
@@ -109,19 +100,13 @@ function setup() {
   imageMode(CENTER);
   init();
 
-  var localStorageManager = new LocalStorageManager();
-  localStorageManager.open(document.title);
-  var best = localStorageManager.getValue(document.title, 'best');
-  if (best) {
-    hiscore = int(best);
+  var best = loadBest();
+  if (best !== null) {
+    hiscore = best;
     prizeupdate();
   }
-  $(window).on("beforeunload", function(e) {
-    console.log(localStorageManager.storage);
-    localStorageManager.setValue(document.title, 'best', hiscore);
-    localStorageManager.setValue(document.title, 'prize', prize);
-    console.log(localStorageManager.storage);
-    localStorageManager.close(document.title);
+  onExit(function () {
+    saveBest(hiscore);
   });
 }
 
@@ -173,7 +158,7 @@ function title() {
 
 function nextSheep() {
   select_frame = 30;
-  limit = moment().add(3.5, 's');
+  limit = Date.now() + 3500;
 
   var i;
   animals = [];
@@ -206,7 +191,7 @@ function nextSheep() {
 function draw() {
   background(255, 255, 255);
 
-  $.each(animals, function(_, v) {
+  animals.forEach(function(v, _) {
     v.update();
   });
 
@@ -225,7 +210,7 @@ function draw() {
     if (ismobile && touches.length == 0) {
       userl = -1;
     }
-    $.each(animals, function(_, v) {
+    animals.forEach(function(v, _) {
       v.draw();
     });
     if (select_frame === 0) {
@@ -238,14 +223,14 @@ function draw() {
       fill(255);
       text('which is many', width / 2 - 2, height / 3 - 2);
 
-      var now = moment();
-      if (limit.isBefore(now)) {
+      var left = limit - Date.now();
+      if (left < 0) {
         userl = -1;
         gameEnd();
       }
-      var dt = int(limit.diff(now) / 1000) + 1;
+      var dt = int(left / 1000) + 1;
       fill(255, 100, 100, 100);
-      var dr = map(limit.diff(now) % 1000, 0, 1000, 150, 300);
+      var dr = map(left % 1000, 0, 1000, 150, 300);
       ellipse(width / 2, 0, dr, dr);
       fill(255, 255, 255);
       text(dt, width / 2, 50);
@@ -255,8 +240,8 @@ function draw() {
   }
 
   hiscore = int(max(score, hiscore));
-  $('#score').text(int(score));
-  $('#hiscore').text(hiscore);
+  setText('score', int(score));
+  setText('hiscore', hiscore);
 }
 
 function mouseReleased() {

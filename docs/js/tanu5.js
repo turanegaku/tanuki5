@@ -36,26 +36,17 @@ var trg = 1000;
 // allow w jump
 var wj = false;
 
-var ismobile = navigator.userAgent.match(/iPhone|Android.+Mobile/);
+var ismobile = matchMedia('(pointer: coarse)').matches;
 
 function init() {
-  wj = !$('#wj').prop('checked');
+  wj = !el('wj').checked;
   score = 0;
   foxsx = [new Enemy(0, 900), new Enemy(0, 1800)];
   trg = 1000;
 }
 
-var prize = 0;
-
 function prizeupdate() {
-  if (hiscore >= $('#q_score').text()) {
-    $('#queen').css('color', '#dd5');
-    prize = max(prize, 1);
-    if (hiscore >= $('#k_score').text()) {
-      $('#king').css('color', '#dd5');
-      prize = max(prize, 2);
-    }
-  }
+  updatePrize(hiscore);
 }
 
 function setup() {
@@ -68,17 +59,13 @@ function setup() {
   textSize(50);
   init();
 
-  var localStorageManager = new LocalStorageManager();
-  localStorageManager.open(document.title);
-  var best = localStorageManager.getValue(document.title, 'best');
-  if (best) {
-    hiscore = int(best);
+  var best = loadBest();
+  if (best !== null) {
+    hiscore = best;
     prizeupdate();
   }
-  $(window).on("beforeunload", function(e) {
-    localStorageManager.setValue(document.title, 'best', hiscore);
-    localStorageManager.setValue(document.title, 'prize', prize);
-    localStorageManager.close(document.title);
+  onExit(function () {
+    saveBest(hiscore);
   });
 
 }
@@ -128,7 +115,7 @@ function draw() {
 
   if (step == GAME) {
     var D = 60 * 60;
-    $.each(foxsx, function(i, foxx) {
+    foxsx.forEach(function(foxx, i) {
       if ((raccoonY - raccoondy - foxY[foxx.i]) * (raccoonY - raccoondy - foxY[foxx.i]) + (raccoonX - foxx.x) * (raccoonX - foxx.x) < D) {
         gameEnd();
       }
@@ -148,7 +135,7 @@ function draw() {
   } else {
     image(raccoon2, raccoonX, raccoonY - raccoondy, SIZE, SIZE);
   }
-  $.each(foxsx, function(i, foxx) {
+  foxsx.forEach(function(foxx, i) {
     image(fox[foxx.i], foxx.x, foxY[foxx.i], SIZE, SIZE);
   });
 
@@ -165,7 +152,7 @@ function draw() {
     }
 
     // fox move
-    $.each(foxsx, function(i, foxx) {
+    foxsx.forEach(function(foxx, i) {
       foxsx[i].x -= scored2 * scored;
       if (foxsx[i].x < -200) {
         foxsx[i].x = 1200 + random(-100, 100 + scored) + foxx.i * random(100, 500);
@@ -176,8 +163,8 @@ function draw() {
   }
 
   hiscore = int(max(score, hiscore));
-  $('#score').text(int(score));
-  $('#hiscore').text(hiscore);
+  setText('score', int(score));
+  setText('hiscore', hiscore);
 }
 
 function press() {
